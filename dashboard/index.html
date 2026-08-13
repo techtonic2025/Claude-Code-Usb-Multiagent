@@ -1,0 +1,2714 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechTonic Forge — AI Dashboard</title>
+<title>Claude Code - Open Source — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- â”€â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">⚒️ TechTonic Forge</div>
+      <button class="topbar-toggle" onclick="toggleSidebar()" title="Close sidebar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <button class="new-chat-btn" onclick="startNewChat()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> New Conversation
+    </button>
+
+    <!-- Sidebar Nav Pages -->
+    <div class="sidebar-nav">
+      <button class="sidebar-nav-btn active" id="tabChat" onclick="switchPage('chat')" title="Chat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg><span>Chat</span></button>
+      <button class="sidebar-nav-btn" id="tabAgents" onclick="switchPage('agents')" title="Agents"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><rect x="7" y="5" width="10" height="6" rx="2"/><circle cx="12" cy="16" r="1"/><line x1="9" y1="11" x2="9" y2="7"/><line x1="15" y1="11" x2="15" y2="7"/></svg><span>Agents</span></button>
+      <button class="sidebar-nav-btn" id="tabAgentChat" onclick="switchPage('agentchat')" title="Agent Chat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><line x1="10.5" y1="7.5" x2="7.5" y2="16.5"/><line x1="13.5" y1="7.5" x2="16.5" y2="16.5"/><line x1="8" y1="17" x2="16" y2="17"/></svg><span>Agent Chat</span></button>
+      <button class="sidebar-nav-btn" id="tabSetup" onclick="switchPage('setup')" title="Setup"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Setup</span></button>
+      <button class="sidebar-nav-btn" id="tabSystem" onclick="switchPage('system')" title="System"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>System</span></button>
+      <button class="sidebar-nav-btn" style="display:none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Actions</span></button>
+      <button class="sidebar-nav-btn" id="tabUpdates" onclick="switchPage('updates')" title="Updates"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg><span>Updates</span></button>
+    </div>
+
+    <div class="sidebar-section">Recent Chats</div>
+    <div id="chatList" style="flex:1;overflow-y:auto"></div>
+
+    <div class="sidebar-divider"></div>
+    <div class="info-panel">
+      <div class="info-row"><span class="info-label">Provider</span><span class="info-val" id="sbProvider">—</span></div>
+      <div class="info-row"><span class="info-label">Model</span><span class="info-val" id="sbModel">—</span></div>
+      <div class="info-row"><span class="info-label">Engine</span><span class="info-val" id="sbEngine">—</span></div>
+      <div class="info-row"><span class="info-label">Git</span><span class="info-val" id="sbGit">—</span></div>
+      <div class="info-row"><span class="info-label">Python</span><span class="info-val" id="sbPython">—</span></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="https://www.youtube.com/@TechTonic-t9b" target="_blank" rel="noopener" class="yt-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span>Visita TechTonic su YouTube</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- â”€â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <div class="main">
+    <!-- Top Bar -->
+    <div class="topbar">
+      <button class="topbar-toggle" onclick="toggleSidebar()" title="Toggle sidebar"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbar-title" id="topbarTitle">Claude Code - Open Source Multi-Platform</div>
+      <button class="topbar-btn" onclick="toggleTheme()" title="Toggle theme" style="flex-shrink:0">🌓</button>
+    </div>
+
+    <!-- CHAT PAGE ═════════════════════════════ -->
+    <div class="chat-page visible" id="chatPage">
+
+      <div class="no-config" id="noConfigBanner" style="display:none">
+        ⚠️ AI provider not configured.
+        <button onclick="switchPage('setup')">Configure Now</button>
+      </div>
+
+      <!-- Welcome -->
+      <div class="welcome" id="welcomeScreen">
+        <h2>What can I help you with?</h2>
+        <p>Start a conversation below, or pick one of the suggestions</p>
+        <div class="welcome-grid">
+          <div class="welcome-card" onclick="sendSuggestion('Explain what you can help me with')">
+            <div class="wc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div><div class="wc-title">Capabilities</div><div class="wc-desc">What can you do?</div>
+          </div>
+          <div class="welcome-card" onclick="sendSuggestion('Write a Python script that lists all files in a directory')">
+            <div class="wc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="wc-title">Write Code</div><div class="wc-desc">Generate a Python script</div>
+          </div>
+          <div class="welcome-card" onclick="sendSuggestion('Help me debug this error: ')">
+            <div class="wc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div class="wc-title">Debug</div><div class="wc-desc">Troubleshoot an error</div>
+          </div>
+          <div class="welcome-card" onclick="sendSuggestion('Summarize the following text for me: ')">
+            <div class="wc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="wc-title">Summarize</div><div class="wc-desc">Condense any content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages" style="display:none"></div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <div class="mode-toggle" id="modeToggle">
+          <span class="mode-label">Mode:</span>
+          <div class="mode-pills" id="modePills">
+            <button class="mode-pill active-normal" id="modeNormal" onclick="setMode('normal')">Normal</button>
+            <button class="mode-pill" id="modeLimitless" onclick="setMode('limitless')">Limitless ⚡</button>
+          </div>
+          <div class="agent-toggle">
+            <label><span class="agent-switch"><input type="checkbox" id="agentToggle" onchange="toggleAgent(this.checked)"><span class="agent-slider"></span></span> Agent Mode</label>
+          </div>
+          <div class="agent-toggle web-toggle" style="margin-left:12px">
+            <label><span class="web-switch"><input type="checkbox" id="webSearchToggle" onchange="toggleWebSearch(this.checked)"><span class="web-slider"></span></span> 🔍 Web</label>
+          </div>
+          <span id="modeLockBadge" style="display:none"></span>
+        </div>
+        <div class="input-bar">
+          <textarea id="chatInput" placeholder="Message AI..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="stopBtn" onclick="abortStream()" title="Stop" style="display:none;background:var(--error)"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></button>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+        <div class="workdir-bar" id="workdirBar" style="display:none">📂 <span id="workdirPath" onclick="changeWorkDir()">Loading...</span></div>
+        <div class="input-hint">Enter to send Â· Shift+Enter for new line</div>
+      </div>
+    </div>
+
+    <!-- AGENTS PAGE ═══════════════════════════ -->
+    <div class="page" id="agentsPage">
+      <div class="page-inner" style="max-width:960px">
+
+        <!-- Agent Gallery -->
+        <div class="card"><h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><rect x="3" y="8" width="18" height="10" rx="2"/><rect x="7" y="4" width="10" height="4" rx="1"/><circle cx="9" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/><line x1="10" y1="18" x2="14" y2="18"/></svg> Agent Gallery</h2><p class="subtitle">Scegli un agente specializzato e assegnagli un task. Ogni agente ha un ruolo e competenze specifiche.</p>
+          <div class="agent-grid" id="agentGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
+            <div style="padding:20px;text-align:center;color:var(--text2)"><div class="spinner"></div> Caricamento agenti...</div>
+          </div>
+        </div>
+
+        <!-- Quick Agent Runner -->
+        <div class="card" id="agentRunnerCard" style="display:none">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+            <span id="agentRunnerIcon" style="font-size:2rem"></span>
+            <div>
+              <h2 id="agentRunnerName" style="margin:0">—</h2>
+              <p class="subtitle" id="agentRunnerRole" style="margin:0">Seleziona un agente dalla galleria</p>
+            </div>
+            <button class="btn btn-outline" onclick="document.getElementById('agentRunnerCard').style.display='none'" style="margin-left:auto"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div style="display:flex;gap:10px">
+            <textarea id="agentTask" placeholder="Descrivi cosa vuoi che l'agente faccia..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;color:var(--text);font-size:0.85rem;font-family:inherit;resize:none;min-height:60px"></textarea>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="runSelectedAgent()" id="btnRunAgent"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-3px"><polygon points="5 3 19 12 5 21 5 3"/></svg> Esegui Agente</button>
+            <button class="btn btn-outline" onclick="document.getElementById('agentRunnerCard').style.display='none'">Annulla</button>
+          </div>
+          <div id="agentResult" style="margin-top:14px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);display:none;max-height:300px;overflow-y:auto;font-size:0.82rem;line-height:1.6"></div>
+          <div id="agentResultActions" style="display:none;gap:6px;margin-top:8px">
+            <button class="btn btn-outline" onclick="saveWorkflow()" style="font-size:0.75rem">💾 Salva Workflow</button>
+            <button class="btn btn-outline" onclick="expandResult()" style="font-size:0.75rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg> Espandi</button>
+          </div>
+        </div>
+
+        <!-- Team Orchestrator → now in Agent Chat -->
+        <div class="card" style="text-align:center">
+          <h2><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="10"/><line x1="15" y1="6" x2="15" y2="10"/><line x1="9" y1="14" x2="9" y2="18"/><line x1="15" y1="14" x2="15" y2="18"/><line x1="2" y1="22" x2="22" y2="22"/></svg> Team Chat</h2>
+          <p class="subtitle">Seleziona gli agenti, assegna un task e guardali collaborare in tempo reale nella chat.</p>
+          <button class="btn btn-primary" onclick="switchPage('agentchat')" style="font-size:0.9rem;padding:12px 28px">💬 Apri Team Chat</button>
+        </div>
+
+        <!-- Saved Workflows -->
+        <div class="card"><h2>📁 Workflow Salvati</h2><p class="subtitle">Risultati salvati che puoi rivedere e rieseguire quando vuoi.</p>
+          <div id="workflowList" style="display:flex;flex-direction:column;gap:6px">
+            <div style="padding:14px;text-align:center;color:var(--text2);font-size:0.78rem">Nessun workflow salvato. Esegui un agente e clicca "💾 Salva Workflow".</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AGENT CHAT PAGE (WhatsApp-style) ══════════════ -->
+    <div class="page" id="agentChatPage">
+      <div class="agentchat-layout">
+        <!-- Header -->
+        <div class="agentchat-header">
+          <div>
+            <h2 style="margin:0;font-size:1.2rem">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Agent Chat
+            </h2>
+            <p style="margin:4px 0 0;color:var(--text2);font-size:0.75rem">Conversazione in linguaggio umano — clicca per espandere i dettagli tecnici</p>
+          </div>
+          <button class="btn btn-danger" onclick="stopAgentChat()" id="btnStopAgentChat2" style="display:none;font-size:0.9rem;padding:10px 22px;font-weight:700"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:-4px"><rect x="4" y="4" width="16" height="16" rx="2"/></svg> FERMA</button>
+          <button class="btn btn-outline" onclick="newAgentChat()" title="Nuova chat" style="font-size:0.8rem;padding:8px 14px;display:flex;align-items:center;gap:6px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuova
+          </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="agentChatMessages" class="whatsapp-chat-area">
+          <div class="whatsapp-empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.35;margin-bottom:12px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div style="font-weight:600;color:var(--text);margin-bottom:6px">Agent Chat pronto</div>
+            <div>Seleziona gli agenti, scrivi un obiettivo e avvia la conversazione.<br>Gli agenti collaboreranno con messaggi brevi in stile chat.</div>
+          </div>
+        </div>
+
+        <!-- Agent Selection -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;padding:8px 0" id="agentChatSelector"></div>
+
+        <!-- Intervention Bar (visible during conversation) -->
+        <div id="interventionBar" style="display:none;gap:8px;padding:10px 0;border-top:1px solid var(--border);align-items:center">
+          <input type="text" id="interventionInput" placeholder="Intervieni nella conversazione... (Invia per reindirizzare gli agenti)" style="flex:1;background:var(--surface2);border:1px solid var(--accent);border-radius:20px;padding:10px 16px;color:var(--text);font-size:0.85rem;font-family:inherit;outline:none"
+            onkeydown="if(event.key==='Enter')sendIntervention()" />
+          <button class="btn btn-primary" onclick="sendIntervention()" style="border-radius:20px;padding:10px 18px;font-size:0.85rem;white-space:nowrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Invia
+          </button>
+        </div>
+
+        <!-- Task Input Area (visible when idle) -->
+        <div id="taskInputArea" style="display:flex;gap:10px;padding:14px 0;border-top:1px solid var(--border);margin-top:12px">
+          <textarea id="agentChatTask" placeholder="Descrivi l'obiettivo del team... (es. 'Crea un sistema di autenticazione JWT con login, registrazione e middleware')" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;color:var(--text);font-size:0.9rem;font-family:inherit;resize:none;min-height:56px"></textarea>
+          <button class="btn btn-primary" onclick="runAgentChat()" id="btnRunAgentChat" style="font-size:0.9rem;padding:12px 24px;white-space:nowrap;align-self:flex-end"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Avvia Chat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETUP PAGE ════════════════════════════ -->
+    <div class="page" id="setupPage">
+      <div class="page-inner">
+        <div class="steps">
+          <div class="step active" id="step1"><span class="step-num">1</span> Provider</div>
+          <div class="step" id="step2"><span class="step-num">2</span> API Key</div>
+          <div class="step" id="step3"><span class="step-num">3</span> Model</div>
+          <div class="step" id="step4"><span class="step-num">4</span> Save</div>
+        </div>
+
+        <div class="section visible" id="sec1">
+          <div class="card">
+            <h2>Select AI Provider</h2><p class="subtitle">Choose where your AI requests will be routed</p>
+            <div class="provider-grid">
+              <div class="provider-option" data-provider="openrouter" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="name">OpenRouter</div><div class="desc">200+ models</div></div>
+              <div class="provider-option" data-provider="nvidia" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="name">NVIDIA NIM</div><div class="desc">Free GPU AI</div></div>
+              <div class="provider-option" data-provider="deepseek" onclick="selectProvider(this)"><div class="icon">DS</div><div class="name">DeepSeek</div><div class="desc">Coding API</div></div>
+              <div class="provider-option" data-provider="gemini" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="name">Gemini</div><div class="desc">Google API</div></div>
+              <div class="provider-option" data-provider="anthropic" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 0-4 4c0 2 1 4 4 5 3-1 4-3 4-5a4 4 0 0 0-4-4z"/><path d="M4 18c0-2 1-4 4-5 3 1 4 3 4 5s-1 4-4 5c-3-1-4-3-4-5z"/><path d="M20 18c0-2-1-4-4-5-3 1-4 3-4 5s1 4 4 5c3-1 4-3 4-5z"/><circle cx="12" cy="12" r="1.5"/></svg></div><div class="name">Claude</div><div class="desc">Anthropic API</div></div>
+              <div class="provider-option" data-provider="ollama" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><div class="name">Ollama</div><div class="desc">Local</div></div>
+              <div class="provider-option" data-provider="lmstudio" onclick="selectProvider(this)"><div class="icon">LM</div><div class="name">LM Studio</div><div class="desc">Local server</div></div>
+              <div class="provider-option" data-provider="custom-openai" onclick="selectProvider(this)"><div class="icon">API</div><div class="name">Custom API</div><div class="desc">OpenAI compat</div></div>
+              <div class="provider-option" data-provider="openai" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="name">OpenAI</div><div class="desc">GPT / Codex</div></div>
+              <div class="provider-option" data-provider="omniroute" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="name">OmniRoute</div><div class="desc">290+ providers</div></div>
+            </div>
+            <div class="btn-group"><button class="btn btn-primary" id="btnNext1" disabled onclick="goStep(2)">Continue</button></div>
+          </div>
+        </div>
+
+        <div class="section" id="sec2">
+          <div class="card">
+            <h2 id="keyStepTitle">Enter API Key</h2><p class="subtitle" id="keyStepSubtitle">Paste your provider API key below</p>
+            <div id="baseUrlWrap" class="form-row" style="display:none"><label>Base URL</label><input type="text" id="baseUrl" placeholder="https://provider.example.com/v1" autocomplete="off"></div>
+            <div id="providerGuide" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px;font-size:0.78rem;color:var(--text2);line-height:1.55"></div>
+            <div class="form-row"><label>API Key</label><input type="password" id="apiKey" placeholder="sk-..." autocomplete="off"></div>
+            <div id="keyStatus" style="margin-top:8px;font-size:0.78rem;display:flex;align-items:center;gap:8px"></div>
+            <div class="btn-group">
+              <button class="btn btn-outline" onclick="goStep(1)">Back</button>
+              <button class="btn btn-primary" id="btnVerify" onclick="verifyKey()">Verify & Continue</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="sec3">
+          <div class="card">
+            <h2>Choose Model</h2><p class="subtitle">Select the AI model you want to use</p>
+            <div id="tierToggle" style="display:none"><div class="tier-toggle"><div class="tier-btn active" data-tier="free" onclick="switchTier('free',this)">Free</div><div class="tier-btn" data-tier="paid" onclick="switchTier('paid',this)">Paid</div></div></div>
+            <div id="modelSearchWrap" style="display:none">
+              <input type="text" id="modelSearch" class="model-search" placeholder="Search models..." oninput="filterModels()">
+              <div class="model-list" id="modelList"></div>
+            </div>
+            <div id="manualModelWrap" style="display:none"><div class="form-row"><label>Model Name</label><input type="text" id="manualModel" placeholder="Enter model name"></div></div>
+            <div id="modelLoading" style="display:none;margin:16px 0;align-items:center;gap:8px;font-size:0.8rem;color:var(--text2)"><div class="spinner"></div> Fetching models...</div>
+            <div class="btn-group"><button class="btn btn-outline" onclick="goStep(2)">Back</button><button class="btn btn-primary" onclick="goStep(4)">Continue</button></div>
+          </div>
+        </div>
+
+        <div class="section" id="sec4">
+          <div class="card">
+            <h2>Review & Save</h2><p class="subtitle">Confirm your configuration</p>
+            <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:18px;display:grid;gap:12px;margin-bottom:4px">
+              <div><span style="color:var(--text2);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em">Provider</span><div style="font-weight:600;margin-top:2px" id="confirmProvider">—</div></div>
+              <div><span style="color:var(--text2);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em">Model</span><div style="font-weight:600;margin-top:2px" id="confirmModel">—</div></div>
+              <div><span style="color:var(--text2);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em">API Key</span><div style="font-weight:600;margin-top:2px;color:var(--text2)" id="confirmKey">—</div></div>
+            </div>
+            <div class="btn-group"><button class="btn btn-outline" onclick="goStep(3)">Back</button><button class="btn btn-primary" id="btnSave" onclick="saveConfig()" style="flex:1">Save Configuration</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM PAGE ═══════════════════════════ -->
+    <div class="page" id="systemPage">
+      <div class="page-inner">
+        <div class="card"><h2>Runtime</h2><p class="subtitle">Node.js and platform details</p>
+          <div class="sys-grid">
+            <div class="sys-item"><div class="sys-label">Node.js</div><div class="sys-val" id="sysNode">—</div></div>
+            <div class="sys-item"><div class="sys-label">Platform</div><div class="sys-val" id="sysPlatform">—</div></div>
+            <div class="sys-item"><div class="sys-label">Architecture</div><div class="sys-val" id="sysArch">—</div></div>
+            <div class="sys-item"><div class="sys-label">Engine</div><div class="sys-val" id="sysEngine">—</div></div>
+          </div>
+        </div>
+        <div class="card"><h2>Developer Tools</h2><p class="subtitle">Available for AI use</p>
+          <div class="sys-grid">
+            <div class="sys-item"><div class="sys-label">Git</div><div class="sys-val" id="sysGit">—</div></div>
+            <div class="sys-item"><div class="sys-label">Python</div><div class="sys-val" id="sysPython">—</div></div>
+          </div>
+        </div>
+        <div class="card" id="cardOllama" style="display:none"><h2>Local AI (Ollama)</h2><p class="subtitle">Manage portable Ollama engine</p>
+          <div class="sys-grid">
+            <div class="sys-item"><div class="sys-label">Status</div><div class="sys-val" id="sysOllamaStatus">—</div></div>
+            <div class="sys-item"><div class="sys-label">Actions</div><div class="sys-val" style="display:flex;gap:8px;margin-top:2px" id="sysOllamaActions"></div></div>
+          </div>
+          <div id="sysOllamaModels" style="margin-top:14px;font-size:0.82rem;color:var(--text2);line-height:1.6"></div>
+        </div>
+        <div class="card"><h2>Storage</h2><p class="subtitle">Drive usage</p>
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px"><span id="diskUsed">—</span><span id="diskTotal">—</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="diskBar" style="width:0%"></div></div>
+        </div>
+        <div class="card"><h2>Session Logs</h2><p class="subtitle">Files in data directory</p>
+          <div class="log-list" id="logList"><div style="padding:16px;text-align:center;color:var(--text2);font-size:0.82rem">Loading...</div></div>
+          <div class="log-viewer" id="logViewer" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPDATES PAGE -->
+    <div class="page" id="updatesPage">
+      <div class="page-inner">
+        <div class="card"><h2>Engine Updates</h2><p class="subtitle">Keep your AI engine up to date</p>
+          <div class="sys-grid">
+            <div class="sys-item"><div class="sys-label">Installed</div><div class="sys-val" id="updateCurrent">—</div></div>
+            <div class="sys-item"><div class="sys-label">Latest</div><div class="sys-val" id="updateLatest">—</div></div>
+          </div>
+          <div id="updateStatus" style="margin-bottom:14px"></div>
+          <div class="btn-group">
+            <button class="btn btn-outline" onclick="checkUpdates()">Check for Updates</button>
+            <button class="btn btn-primary" id="btnUpdate" style="display:none" onclick="installUpdate()">Update Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Confirm Modal -->
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.4)">
+    <div style="font-size:1.5rem;margin-bottom:8px">🗑️</div>
+    <div style="font-weight:600;margin-bottom:6px" id="modalTitle">Delete Conversation?</div>
+    <div style="color:var(--text2);font-size:0.82rem;margin-bottom:20px" id="modalBody">This action cannot be undone.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="modalConfirmBtn" onclick="executeDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Permission Modal -->
+<div id="permissionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;align-items:center;justify-content:center">
+  <div class="perm-dialog">
+    <div class="perm-icon">🔒</div>
+    <div class="perm-title">Richiesta di accesso</div>
+    <div class="perm-subtitle">L'agente vuole accedere a un percorso esterno alla chiavetta:</div>
+    <div class="perm-path" id="permPath">C:\Users\...</div>
+    <div class="perm-tool" id="permTool">read_file</div>
+    <label style="display:flex;align-items:center;gap:8px;margin:14px 0 6px;font-size:0.8rem;color:var(--text2);cursor:pointer;user-select:none">
+      <input type="checkbox" id="permSubdirs" checked style="width:16px;height:16px;accent-color:var(--accent)">
+      Autorizza anche tutte le sottodirectory e file contenuti
+    </label>
+    <div class="perm-buttons">
+      <button class="btn btn-danger" id="permDeny" onclick="resolvePermission(false)" style="flex:1">🔒 Nega</button>
+      <button class="btn btn-primary" id="permAllow" onclick="resolvePermission(true)" style="flex:1;background:#22c55e;border-color:#22c55e">✅ Consenti</button>
+    </div>
+  </div>
+</div>
+
+<!-- Expand Modal -->
+<div id="expandModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:95vw;height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border)">
+      <span style="font-weight:600" id="expandTitle">📄 Risultato</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline" onclick="copyExpandContent()" style="font-size:0.75rem">📋 Copia</button>
+        <button class="btn btn-outline" onclick="closeExpand()" style="font-size:0.75rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Chiudi</button>
+      </div>
+    </div>
+    <div id="expandContent" style="flex:1;overflow-y:auto;padding:20px;font-size:0.85rem;line-height:1.7;white-space:pre-wrap"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const API = '';
+let cfg = {};
+let currentChatId = null;
+let agentChatId = null; // Separate ID for agent chat to avoid polluting regular chat
+let chatMessages = [];
+let isStreaming = false;
+let allModels = [];
+let setupState = { provider:'', key:'', model:'', tier:'free', baseUrl:'' };
+let streamController = null;
+let userScrolled = false;
+let currentMode = 'normal';
+let modeLocked = false;
+let agentMode = false;
+let webSearchEnabled = false;
+let workDir = '';
+const defaults = { gemini:'gemini-2.0-pro-exp-02-05', anthropic:'claude-3-7-sonnet-20250219', ollama:'llama3.2:3b', openai:'gpt-4o', nvidia:'meta/llama-3.1-70b-instruct', deepseek:'deepseek-chat', lmstudio:'', 'custom-openai':'' };
+const providerNames = { openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Claude', ollama:'Ollama', openai:'OpenAI', nvidia:'NVIDIA NIM', deepseek:'DeepSeek', lmstudio:'LM Studio', 'custom-openai':'Custom OpenAI-Compatible' };
+
+// â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+(async function init() {
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.dataset.theme = saved;
+  loadConfig();
+  await loadChatList();
+  initScrollTracking();
+  loadWorkDir();
+  const savedAgent = localStorage.getItem('agentMode');
+  if (savedAgent === 'true') { agentMode = true; document.getElementById('agentToggle').checked = true; document.getElementById('workdirBar').style.display = 'flex'; }
+  const savedWebSearch = localStorage.getItem('webSearch');
+  if (savedWebSearch === 'true') { webSearchEnabled = true; document.getElementById('webSearchToggle').checked = true; }
+  // Restore last active chat on refresh
+  const lastChatId = localStorage.getItem('activeChatId');
+  if (lastChatId) { try { await openChatById(lastChatId); } catch {} }
+})();
+
+async function loadConfig() {
+  try {
+    const res = await fetch(`${API}/api/config`);
+    cfg = await res.json();
+    const isConfigured = !!cfg.AI_PROVIDER;
+    document.getElementById('noConfigBanner').style.display = isConfigured ? 'none' : 'flex';
+
+    const pName = cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL?.includes('openrouter') ? 'OpenRouter' :
+                  cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL?.includes('integrate.api.nvidia.com') ? 'NVIDIA NIM' :
+                  cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL?.includes('api.deepseek.com') ? 'DeepSeek' :
+                  cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL?.includes('localhost:1234') ? 'LM Studio' :
+                  cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL?.includes('localhost:20128') ? 'OmniRoute' :
+                  cfg.AI_PROVIDER === 'openai' && cfg.OPENAI_BASE_URL && !cfg.OPENAI_BASE_URL.includes('api.openai.com') ? 'Custom OpenAI-Compatible' :
+                  cfg.AI_PROVIDER === 'ollama' ? 'Local AI' :
+                  providerNames[cfg.AI_PROVIDER] || cfg.AI_PROVIDER || '—';
+    const model = cfg.AI_DISPLAY_MODEL || cfg.OPENAI_MODEL || '—';
+
+    document.getElementById('sbProvider').textContent = pName;
+    document.getElementById('sbModel').textContent = model;
+    document.getElementById('topbarTitle').textContent = isConfigured ? `${model}` : 'Portable AI';
+  } catch {}
+  loadSidebarInfo();
+}
+
+async function loadSidebarInfo() {
+  try {
+    const res = await fetch(`${API}/api/system`);
+    const d = await res.json();
+    document.getElementById('sbEngine').textContent = d.engineVersion || '—';
+    document.getElementById('sbGit').innerHTML = d.hasGit ? '<span class="info-badge badge-ok">✓</span>' : '<span class="info-badge badge-err">✗</span>';
+    document.getElementById('sbPython').innerHTML = d.hasPython ? '<span class="info-badge badge-ok">✓</span>' : '<span class="info-badge badge-err">✗</span>';
+  } catch {}
+}
+
+// â”€â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 500) {
+    sb.classList.toggle('mobile-open');
+    sb.classList.remove('collapsed');
+  } else {
+    sb.classList.toggle('collapsed');
+  }
+}
+
+// â”€â”€â”€ Theme â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€â”€ Agents Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let selectedAgentId = null;
+let allAgents = {};
+let agentStreamController = null;
+let lastAgentResult = null; // saved for workflow
+
+async function loadAgentsPage() {
+  try {
+    const res = await fetch(`${API}/api/agents`);
+    const data = await res.json();
+    allAgents = data.agents || {};
+    renderAgentGrid(allAgents);
+    renderTeamSelector(allAgents);
+    renderAgentChatSelector(allAgents);
+    loadWorkflows();
+  } catch { document.getElementById('agentGrid').innerHTML = '<div style="padding:20px;text-align:center;color:var(--error)">Errore nel caricamento agenti.</div>'; }
+}
+
+// â”€â”€â”€ Workflows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function saveWorkflow() {
+  if (!lastAgentResult) return;
+  const name = prompt('Nome per il workflow:', lastAgentResult.task.slice(0, 40));
+  if (!name) return;
+  const wf = {
+    name,
+    agentName: lastAgentResult.agentName,
+    agentId: lastAgentResult.agentId,
+    task: lastAgentResult.task,
+    result: lastAgentResult.result
+  };
+  try {
+    await fetch(`${API}/api/workflows`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(wf) });
+    showToast('Workflow salvato! ✅', 'success');
+    loadWorkflows();
+  } catch { showToast('Errore nel salvataggio', 'error'); }
+}
+
+async function loadWorkflows() {
+  try {
+    const res = await fetch(`${API}/api/workflows`);
+    const data = await res.json();
+    const el = document.getElementById('workflowList');
+    if (!data.workflows?.length) {
+      el.innerHTML = '<div style="padding:14px;text-align:center;color:var(--text2);font-size:0.78rem">Nessun workflow salvato. Esegui un agente e clicca "💾 Salva Workflow".</div>';
+      return;
+    }
+    el.innerHTML = data.workflows.map(w => `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:1.2rem">📄</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(w.name)}</div>
+          <div style="font-size:0.65rem;color:var(--text2)">🤖 ${escHtml(w.agentName || w.agentId)} • ${new Date(w.saved).toLocaleDateString()}</div>
+        </div>
+        <button class="btn btn-outline" onclick="event.stopPropagation();viewWorkflow('${w.id}')" style="font-size:0.7rem;padding:4px 10px">👁️ Vedi</button>
+        <button class="btn btn-outline" onclick="event.stopPropagation();rerunWorkflow('${w.id}')" style="font-size:0.7rem;padding:4px 10px">▶️ Riesegui</button>
+        <button class="btn btn-outline" onclick="event.stopPropagation();deleteWorkflow('${w.id}')" style="font-size:0.7rem;padding:4px 8px;color:var(--error)">🗑️</button>
+      </div>
+    `).join('');
+  } catch {}
+}
+
+async function viewWorkflow(id) {
+  try {
+    const res = await fetch(`${API}/api/workflows/${id}`);
+    const wf = await res.json();
+    document.getElementById('expandTitle').textContent = `📄 ${wf.name}`;
+    document.getElementById('expandContent').textContent = wf.result;
+    document.getElementById('expandModal').style.display = 'flex';
+  } catch { showToast('Errore nel caricamento', 'error'); }
+}
+
+async function rerunWorkflow(id) {
+  try {
+    const res = await fetch(`${API}/api/workflows/${id}`);
+    const wf = await res.json();
+    // Set up agent runner and execute
+    selectAgent(wf.agentId);
+    document.getElementById('agentTask').value = wf.task;
+    setTimeout(() => runSelectedAgent(), 300);
+  } catch { showToast('Errore nel caricamento', 'error'); }
+}
+
+async function deleteWorkflow(id) {
+  if (!confirm('Eliminare questo workflow?')) return;
+  try {
+    await fetch(`${API}/api/workflows/${id}`, { method: 'DELETE' });
+    loadWorkflows();
+    showToast('Workflow eliminato', 'success');
+  } catch { showToast('Errore', 'error'); }
+}
+
+// â”€â”€â”€ Expand Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function expandResult() {
+  if (!lastAgentResult) return;
+  document.getElementById('expandTitle').textContent = `🤖 ${lastAgentResult.agentName} — Risultato`;
+  document.getElementById('expandContent').textContent = lastAgentResult.result;
+  document.getElementById('expandModal').style.display = 'flex';
+}
+
+function closeExpand() {
+  document.getElementById('expandModal').style.display = 'none';
+}
+
+function copyExpandContent() {
+  const text = document.getElementById('expandContent').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Copiato! 📋', 'success')).catch(() => showToast('Errore copia', 'error'));
+}
+
+// Close modal on background click
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'expandModal') closeExpand();
+});
+
+const AGENT_SVGS = {
+  '💻': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/><polyline points="6 7 8 9 6 11"/><polyline points="10 7 12 9 10 11"/></svg>',
+  '📋': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>',
+  '🔍': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>',
+  '🧪': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M9 3v6.5L4.5 17a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L15 9.5V3"/><line x1="9" y1="3" x2="15" y2="3"/></svg>',
+  '🤖': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="10" rx="2"/><rect x="7" y="4" width="10" height="4" rx="1"/><circle cx="9" cy="13" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13" r="1" fill="currentColor" stroke="none"/><line x1="10" y1="18" x2="14" y2="18"/></svg>',
+  '🏗️': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="10"/><line x1="15" y1="6" x2="15" y2="10"/><line x1="9" y1="14" x2="9" y2="18"/><line x1="15" y1="14" x2="15" y2="18"/><line x1="2" y1="22" x2="22" y2="22"/></svg>',
+  '🔒': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/></svg>',
+  '📝': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  '🎨': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="3.5"/><circle cx="6.5" cy="17.5" r="3.5"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>',
+  '🚀': '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3"/><path d="M15.5 4.5C14 3.5 8 3 8 3s.5 6 2 7.5c.79.79 2.08.8 2.86.01.77-.78.77-2.04-.01-2.82C11.66 8.48 8 7.5 8 7.5"/><path d="M21 8l-5 5"/></svg>',
+};
+function agentIconHTML(emoji, size) { return AGENT_SVGS[emoji] || `<span style="font-size:${size||'1.4rem'}">${emoji||'🤖'}</span>`; }
+
+function renderAgentGrid(agents) {
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = Object.entries(agents).map(([id, a]) => `
+    <div class="agent-card" onclick="selectAgent('${id}')" id="agentCard_${id}"
+         style="background:var(--surface);border:2px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;transition:all 0.2s;text-align:center">
+      <div style="margin-bottom:6px;color:var(--text2);display:flex;justify-content:center">${agentIconHTML(a.icon||'🤖')}</div>
+      <div style="font-weight:600;font-size:0.85rem;margin-bottom:2px">${a.name||id}</div>
+      <div style="font-size:0.7rem;color:var(--text2);margin-bottom:6px">${a.role||''}</div>
+      <div style="font-size:0.68rem;color:var(--text3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${a.goal||a.backstory||''}</div>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:3px;justify-content:center">${(a.tools||[]).slice(0,4).map(t => `<span style="font-size:0.58rem;padding:1px 6px;background:var(--accent-subtle);color:var(--accent);border-radius:8px">${t}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function selectAgent(id) {
+  selectedAgentId = id;
+  const agent = allAgents[id];
+  if (!agent) return;
+  // Highlight selected card
+  document.querySelectorAll('.agent-card').forEach(c => c.style.borderColor = 'var(--border)');
+  const card = document.getElementById(`agentCard_${id}`);
+  if (card) card.style.borderColor = 'var(--accent)';
+  // Show runner
+  document.getElementById('agentRunnerIcon').innerHTML = agentIconHTML(agent.icon || '🤖', '1.5rem');
+  document.getElementById('agentRunnerName').textContent = agent.name || id;
+  document.getElementById('agentRunnerRole').textContent = agent.role || '';
+  document.getElementById('agentRunnerCard').style.display = '';
+  document.getElementById('agentTask').value = '';
+  document.getElementById('agentResult').style.display = 'none';
+  document.getElementById('agentResultActions').style.display = 'none';
+  lastAgentResult = null;
+  document.getElementById('agentRunnerCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function runSelectedAgent() {
+  const task = document.getElementById('agentTask').value.trim();
+  if (!task || !selectedAgentId) return;
+  const resultEl = document.getElementById('agentResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="thinking-indicator"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div> L\'agente sta lavorando...';
+  document.getElementById('btnRunAgent').disabled = true;
+
+  let fullText = '';
+  try {
+    agentStreamController = new AbortController();
+    const res = await fetch(`${API}/api/agent/run`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agentId: selectedAgentId, task }),
+      signal: agentStreamController.signal
+    });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    // Persistent header with animated thinking indicator
+    resultEl.innerHTML = `
+      <div id="agentRunHeader" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:var(--surface2);border-radius:8px">
+        <div class="thinking-indicator" style="margin:0"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div>
+        <span id="agentRunStatus" style="font-size:0.82rem;font-weight:600;color:var(--accent)">In esecuzione...</span>
+      </div>
+      <div id="agentStreamOutput"></div>
+    `;
+    const output = document.getElementById('agentStreamOutput');
+    const statusEl = document.getElementById('agentRunStatus');
+    const headerEl = document.getElementById('agentRunHeader');
+    let lastStep = 0;
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n'); buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'agent_thinking') {
+            lastStep = data.iteration;
+            if (statusEl) statusEl.textContent = `Step ${data.iteration} — analizzo...`;
+          } else if (data.type === 'agent_reasoning') {
+            if (statusEl) statusEl.textContent = `Step ${data.iteration || lastStep} — ragiono...`;
+            const last = output.lastElementChild;
+            if (last && last.classList.contains('reasoning')) last.textContent += data.content;
+            else {
+              const d = document.createElement('div');
+              d.className = 'reasoning';
+              d.style.cssText = 'color:var(--text2);font-size:0.72rem;font-style:italic;margin:4px 0';
+              d.textContent = data.content;
+              output.appendChild(d);
+            }
+          } else if (data.type === 'tool_call') {
+            if (statusEl) statusEl.textContent = `Eseguo: ${data.name}...`;
+            output.innerHTML += `<div style="background:var(--surface2);padding:6px 10px;border-radius:6px;margin:4px 0;font-size:0.72rem">🔧 <strong>${escapeHTML(data.name)}</strong></div>`;
+          } else if (data.type === 'tool_result') {
+            if (statusEl) statusEl.textContent = `Step ${lastStep} — continuo...`;
+            output.innerHTML += `<div style="color:var(--success);font-size:0.68rem;margin-left:12px">✅ Completato</div>`;
+          } else if (data.type === 'permission_required') {
+            if (statusEl) statusEl.textContent = `Richiesta permesso...`;
+            const permRes = await showPermissionDialog(data.path, data.tool);
+            const allowed = typeof permRes === 'object' ? permRes.allowed : permRes;
+            const remember = typeof permRes === 'object' ? permRes.remember : true;
+            try {
+              await fetch(`${API}/api/permission/respond`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ permissionId: data.permissionId, allow: allowed, remember })
+              });
+            } catch {}
+            if (statusEl) statusEl.textContent = `Step ${lastStep} — continuo...`;
+          } else if (data.type === 'agent_text') {
+            if (statusEl) statusEl.textContent = `Finalizzo...`;
+            output.innerHTML += `<div style="margin-top:8px;white-space:pre-wrap">${renderMarkdown(data.content)}</div>`;
+          } else if (data.type === 'agent_error') {
+            if (statusEl) statusEl.textContent = `Errore`;
+            output.innerHTML += `<div style="color:var(--error)">❌ ${escapeHTML(data.error)}</div>`;
+          } else if (data.type === 'done') {
+            fullText = data.fullText || '';
+          }
+        } catch {}
+      }
+    }
+    // Remove thinking indicator, show done
+    if (headerEl) {
+      headerEl.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> <span style="font-size:0.82rem;font-weight:600;color:var(--success)">Completato (${lastStep} step)</span>`;
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') resultEl.innerHTML = `<span style="color:var(--error)">❌ ${err.message}</span>`;
+  }
+  document.getElementById('btnRunAgent').disabled = false;
+  agentStreamController = null;
+  // Show action buttons
+  if (fullText) {
+    lastAgentResult = { agentId: selectedAgentId, task, result: fullText, agentName: allAgents[selectedAgentId]?.name || selectedAgentId };
+    document.getElementById('agentResultActions').style.display = 'flex';
+  }
+}
+
+function renderTeamSelector(agents) {
+  const el = document.getElementById('teamAgentSelector');
+  if (!el) return; // Element removed — Team Chat now in Agent Chat page
+  const defaultTeam = ['project-manager', 'developer', 'code-reviewer', 'tester'];
+  el.innerHTML = Object.values(agents).map((a, i) => {
+    const id = Object.keys(agents)[i];
+    const checked = defaultTeam.includes(id);
+    return `<label style="display:flex;align-items:center;gap:4px;font-size:0.75rem;cursor:pointer;background:var(--surface2);padding:5px 10px;border-radius:16px;border:1px solid var(--border)">
+      <input type="checkbox" value="${id}" ${checked?'checked':''}> ${agentIconHTML(a.icon||'🤖', '1.2rem')} ${a.name||id}
+    </label>`;
+  }).join('');
+}
+
+async function runTeam() {
+  const task = document.getElementById('teamTask').value.trim();
+  if (!task) return;
+  const selected = [...document.querySelectorAll('#teamAgentSelector input:checked')].map(cb => cb.value);
+  const resultEl = document.getElementById('teamResult');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div class="thinking-indicator"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div> Il team sta collaborando...';
+  document.getElementById('btnRunTeam').disabled = true;
+
+  try {
+    agentStreamController = new AbortController();
+    const res = await fetch(`${API}/api/orchestrator/run`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task, agents: selected }),
+      signal: agentStreamController.signal
+    });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    resultEl.innerHTML = '<div style="font-weight:600;margin-bottom:8px">🏢 Team all\'opera...</div><div id="teamStreamOutput"></div>';
+    const output = document.getElementById('teamStreamOutput');
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n'); buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'orchestrator') {
+            if (data.phase) output.innerHTML += `<div style="color:var(--accent);margin:4px 0;font-size:0.78rem">${data.phase}</div>`;
+            if (data.subtasks) output.innerHTML += `<div style="margin:6px 0;padding:8px;background:var(--surface2);border-radius:6px;font-size:0.75rem">${data.subtasks.map((s,i) => `${i+1}. ${s}`).join('<br>')}</div>`;
+            if (data.review) output.innerHTML += `<div style="margin:8px 0;padding:10px;background:var(--accent-subtle);border-radius:6px;font-size:0.75rem"><strong>🔍 Review:</strong> ${renderMarkdown(data.review)}</div>`;
+          } else if (data.type === 'agent_text') {
+            output.innerHTML += `<div style="margin-top:8px;white-space:pre-wrap">${renderMarkdown(data.content)}</div>`;
+          } else if (data.type === 'agent_error') {
+            output.innerHTML += `<div style="color:var(--error)">❌ ${escapeHTML(data.error)}</div>`;
+          }
+        } catch {}
+      }
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') resultEl.innerHTML = `<span style="color:var(--error)">❌ ${err.message}</span>`;
+  }
+  document.getElementById('btnRunTeam').disabled = false;
+  agentStreamController = null;
+}
+
+// â”€â”€â”€ Agent Chat (Buzz-style multi-agent conversation) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+let agentChatController = null;
+
+async function loadAgentChatSelector() {
+  try {
+    const res = await fetch(`${API}/api/agents`);
+    const data = await res.json();
+    renderAgentChatSelector(data.agents || {});
+  } catch { /* agent chat page might not have the selector */ }
+}
+
+function renderAgentChatSelector(agents) {
+  const el = document.getElementById('agentChatSelector');
+  if (!el) return; // Only exists on Agent Chat page
+  const defaults = ['project-manager', 'developer', 'code-reviewer', 'tester'];
+  el.innerHTML = Object.entries(agents).map(([id, a]) => {
+    const checked = defaults.includes(id) ? 'checked' : '';
+    return `<label style="display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--text2);cursor:pointer;padding:4px 10px;background:var(--surface2);border-radius:14px;border:1px solid ${checked?'var(--accent)':'var(--border)'};white-space:nowrap">
+      <input type="checkbox" value="${id}" ${checked} style="accent-color:var(--accent)"> ${agentIconHTML(a.icon||'🤖', '1.2rem')} ${a.name||id}
+    </label>`;
+  }).join('');
+}
+
+let agentChatSessionId = null; // Current session ID for interventions
+let agentChatContext = null; // { task, reportText } for follow-up continuity
+
+async function runAgentChat() {
+  const rawTask = document.getElementById('agentChatTask').value.trim();
+  if (!rawTask) return;
+
+  // If we have existing context, this is a follow-up — include full history
+  let task, isFollowUp = false;
+  if (agentChatContext && agentChatContext.task) {
+    task = `## STORICO CONVERSAZIONE PRECEDENTE\n**Task originale:** ${agentChatContext.task}\n\n**Piano elaborato dal team:**\n${agentChatContext.reportText}\n\n---\n\n## NUOVO MESSAGGIO (FOLLOW-UP)\n${rawTask}\n\nRispondi a questo follow-up tenendo conto di TUTTO lo storico sopra. Aggiorna il piano se necessario.`;
+    isFollowUp = true;
+  } else {
+    task = rawTask;
+  }
+
+  // Abort any previous running chat + implementation
+  if (agentChatController) { agentChatController.abort(); agentChatController = null; }
+  stopImplementation();
+
+  // Get selected agents
+  const selected = [...document.querySelectorAll('#agentChatSelector input:checked')].map(cb => cb.value);
+  if (selected.length === 0) { showToast('Seleziona almeno un agente', 'error'); return; }
+
+  const msgEl = document.getElementById('agentChatMessages');
+  document.getElementById('btnRunAgentChat').disabled = true;
+  document.getElementById('agentChatTask').value = '';
+  const btnStop = document.getElementById('btnStopAgentChat2');
+  if (btnStop) btnStop.style.display = 'inline-flex';
+
+  // Show/hide input areas
+  document.getElementById('taskInputArea').style.display = 'none';
+  document.getElementById('interventionBar').style.display = 'flex';
+
+  // If this is a follow-up, DON'T clear existing messages — append to them
+  isFollowUp = !!(agentChatContext && agentChatContext.task);
+  // If there were pending interventions from a stopped chat, prepend them to the task
+  if (isFollowUp && agentChatContext.interventions && agentChatContext.interventions.length > 0) {
+    task = 'ISTRUZIONI PRIORITARIE DAL CAPO TEAM (da chat precedente interrotta):\n' +
+      agentChatContext.interventions.map(m => '- ' + m).join('\n') +
+      '\n\nTask aggiuntivo: ' + task;
+    // Clear interventions so they don't repeat on next follow-up
+    agentChatContext.interventions = undefined;
+  }
+  if (!isFollowUp) {
+    // Fresh start: show header + thinking indicator
+    const maxLen = 150;
+    const truncated = task.length > maxLen ? task.slice(0, maxLen) + '...' : task;
+    msgEl.innerHTML = `<div class="whatsapp-chat-header" id="taskHeader" style="cursor:default" title="${escapeHTML(task)}">
+      <span id="taskHeaderText"><strong>${escapeHTML(truncated)}</strong></span>
+      <span style="font-size:0.7rem;color:var(--text3)">(${selected.length} agenti)</span>
+      ${task.length > maxLen ? `<button class="wa-expand-btn" onclick="toggleTaskHeader(event)" style="margin-left:8px;display:inline-flex" data-full="${escapeHTML(task)}" data-short="${escapeHTML(truncated)}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> <span>Espandi</span></button>` : ''}
+    </div>
+    <div class="agent-thinking" id="agentThinking"><div class="thinking-indicator"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div> Gli agenti stanno analizzando...</div>`;
+  } else {
+    // Follow-up: keep existing messages, add continuation marker
+    const contDiv = document.createElement('div');
+    contDiv.className = 'whatsapp-phase';
+    contDiv.innerHTML = '<span>⬇️ Continua...</span>';
+    msgEl.appendChild(contDiv);
+    // Add thinking indicator
+    const thinkDiv = document.createElement('div');
+    thinkDiv.className = 'agent-thinking';
+    thinkDiv.id = 'agentThinking';
+    thinkDiv.innerHTML = '<div class="thinking-indicator"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div> Gli agenti stanno analizzando...';
+    msgEl.appendChild(thinkDiv);
+    msgEl.scrollTop = msgEl.scrollHeight;
+  }
+
+  // Helper: create a compact phase divider
+  function addPhase(label, detail) {
+    const div = document.createElement('div');
+    div.className = 'whatsapp-phase';
+    div.innerHTML = `<span>${escapeHTML(label)}</span><span>${escapeHTML(detail)}</span>`;
+    msgEl.appendChild(div);
+    msgEl.scrollTop = msgEl.scrollHeight;
+  }
+
+  // Helper: create a WhatsApp-style bubble
+  function addWhatsAppBubble(agent) {
+    const div = document.createElement('div');
+    div.className = 'whatsapp-bubble';
+    div.id = 'wa-bubble-' + agent.id;
+    div.setAttribute('data-agent', agent.id);
+    div.innerHTML = `
+      <div class="wa-avatar">${agentIconHTML(agent.icon, '20px')}</div>
+      <div class="wa-body">
+        <div class="wa-name">${escapeHTML(agent.name)}</div>
+        <div class="wa-text"></div>
+        <div class="wa-details" style="display:none"><div class="wa-details-inner"></div></div>
+        <button class="wa-expand-btn" style="display:none" onclick="toggleDetails(this)" title="Mostra dettagli tecnici">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <span>Dettagli</span>
+        </button>
+      </div>`;
+    msgEl.appendChild(div);
+    msgEl.scrollTop = msgEl.scrollHeight;
+    return div;
+  }
+
+  // Helper: update bubble with final message (short + details)
+  function finalizeBubble(agentId, shortMsg, details) {
+    const bubble = document.getElementById('wa-bubble-' + agentId);
+    if (!bubble) return;
+    const textEl = bubble.querySelector('.wa-text');
+    const detailsInner = bubble.querySelector('.wa-details-inner');
+    const detailsDiv = bubble.querySelector('.wa-details');
+    const expandBtn = bubble.querySelector('.wa-expand-btn');
+
+    textEl.textContent = shortMsg || '(nessuna risposta)';
+
+    if (details && details.length > 10) {
+      detailsInner.innerHTML = formatMarkdown(details);
+      expandBtn.style.display = 'inline-flex';
+      // Store raw details for toggle
+      bubble._details = details;
+    }
+  }
+
+  // Helper: get bubble text element for streaming
+  function getWaText(agentId) {
+    const bubble = document.getElementById('wa-bubble-' + agentId);
+    return bubble ? bubble.querySelector('.wa-text') : null;
+  }
+
+  // Helper: show user intervention in chat
+  function addUserIntervention(message, phase) {
+    const div = document.createElement('div');
+    div.className = 'whatsapp-intervention';
+    div.innerHTML = `<div class="wa-intervention-label">💬 Tu — durante ${escapeHTML(phase)}</div><div class="wa-intervention-text">${escapeHTML(message)}</div>`;
+    msgEl.appendChild(div);
+    msgEl.scrollTop = msgEl.scrollHeight;
+  }
+
+  agentChatController = new AbortController();
+  agentChatSessionId = null;
+
+  try {
+    const res = await fetch(`${API}/api/orchestrator/chat`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task, agents: selected }),
+      signal: agentChatController.signal
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let activeAgents = {};
+    let streamingAgent = null;
+    let teamReport = []; // Collect all agent responses for final report
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n'); buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+
+          // Remove thinking indicator on first real event
+          const thinking = document.getElementById('agentThinking');
+          if (thinking) thinking.remove();
+
+          if (data.type === 'session') {
+            agentChatSessionId = data.sessionId;
+          } else if (data.type === 'phase') {
+            addPhase(data.label, data.detail);
+          } else if (data.type === 'agent_start') {
+            // Remove working ring from previous agent
+            const prevWorking = document.querySelector('.wa-avatar.working');
+            if (prevWorking) prevWorking.classList.remove('working');
+            const bubble = addWhatsAppBubble(data.agent);
+            activeAgents[data.agent.id] = { bubble, content: '', hasSeparator: false, name: data.agent.name, role: data.agent.role, icon: data.agent.icon };
+            streamingAgent = data.agent.id;
+            // Add green blinking ring
+            const av = bubble.querySelector('.wa-avatar');
+            if (av) av.classList.add('working');
+          } else if (data.type === 'agent_delta') {
+            const a = activeAgents[data.agentId];
+            if (a) {
+              a.content += data.content;
+              // Stream into the text element, but try to hide the --- and after
+              const waText = getWaText(data.agentId);
+              if (waText) {
+                // Show just the short part during streaming
+                const sepMatch = a.content.match(/\n?---\n?/);
+                if (sepMatch) {
+                  a.hasSeparator = true;
+                  waText.textContent = a.content.slice(0, sepMatch.index).trim() + '...';
+                } else if (!a.hasSeparator) {
+                  waText.textContent = a.content;
+                }
+              }
+            }
+            msgEl.scrollTop = msgEl.scrollHeight;
+          } else if (data.type === 'agent_end') {
+            const a = activeAgents[data.agentId];
+            if (a) {
+              finalizeBubble(data.agentId, data.shortMsg || a.content, data.details || '');
+              // Store for final report
+              teamReport.push({
+                name: a.name || data.agentId,
+                role: a.role || '',
+                icon: a.icon || '🤖',
+                message: data.shortMsg || a.content || '',
+                details: data.details || ''
+              });
+              // Remove working ring
+              const av = a.bubble.querySelector('.wa-avatar');
+              if (av) av.classList.remove('working');
+            }
+            streamingAgent = null;
+          } else if (data.type === 'agent_error') {
+            const waText = getWaText(data.agentId);
+            if (waText) waText.innerHTML += `<div style="color:var(--error);margin-top:4px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ${escapeHTML(data.error)}</div>`;
+          } else if (data.type === 'tool_call') {
+            // Show tool execution in the WhatsApp chat
+            const div = document.createElement('div');
+            div.className = 'whatsapp-tool';
+            div.id = 'wa-tool-' + data.agentId + '-' + data.toolName;
+            const icon = data.toolName === 'write_file' ? '📄' : data.toolName === 'read_file' ? '📖' : '📁';
+            div.innerHTML = `<div style="display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--warning);padding:4px 12px">
+              ${icon} <strong>${data.toolName}</strong> ${escapeHTML((data.args||{}).path||'')}
+              <span class="tool-spinner" style="width:10px;height:10px;border:2px solid var(--warning);border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin 0.6s linear infinite"></span>
+            </div>`;
+            msgEl.appendChild(div);
+            msgEl.scrollTop = msgEl.scrollHeight;
+          } else if (data.type === 'tool_result') {
+            // Update tool card with result
+            const toolDiv = document.getElementById('wa-tool-' + data.agentId + '-' + data.toolName);
+            if (toolDiv) {
+              const spinner = toolDiv.querySelector('.tool-spinner');
+              if (spinner) spinner.remove();
+              const icon = data.toolName === 'write_file' ? '✅' : '📋';
+              const resultText = data.result || '';
+              const isFileCreated = data.toolName === 'write_file' && resultText.includes('File scritto');
+              toolDiv.innerHTML = `<div style="display:flex;align-items:center;gap:6px;font-size:0.7rem;color:${isFileCreated?'var(--success)':'var(--text2)'};padding:4px 12px">
+                ${icon} <strong>${data.toolName}</strong> ${escapeHTML(resultText.slice(0, 120))}
+              </div>`;
+            }
+          } else if (data.type === 'intervention_applied') {
+            if (data.messages) {
+              data.messages.forEach(m => addUserIntervention(m, data.phase || ''));
+            }
+          } else if (data.type === 'permission_required') {
+            // Agent wants to access an external path — ask user
+            const permRes = await showPermissionDialog(data.path, data.tool);
+            const allowed = typeof permRes === 'object' ? permRes.allowed : permRes;
+            const remember = typeof permRes === 'object' ? permRes.remember : true;
+            try {
+              await fetch(`${API}/api/permission/respond`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ permissionId: data.permissionId, allow: allowed, remember })
+              });
+            } catch {}
+          } else if (data.type === 'agent_interrupted') {
+            // Show that an agent was interrupted and will re-run
+            const intDiv = document.createElement('div');
+            intDiv.className = 'whatsapp-intervention';
+            intDiv.innerHTML = `<div class="wa-intervention-label">⚡ Agente interrotto</div><div class="wa-intervention-text">Rieseguo con: ${escapeHTML(data.intervention || '')}</div>`;
+            msgEl.appendChild(intDiv);
+            msgEl.scrollTop = msgEl.scrollHeight;
+          } else if (data.type === 'done') {
+            const createdFiles = data.createdFiles || [];
+            const div = document.createElement('div');
+            div.className = 'whatsapp-phase done';
+            const filesInfo = createdFiles.length > 0
+              ? `<div style="font-size:0.8rem;color:var(--success);margin-top:6px">📁 ${createdFiles.length} file creati: ${createdFiles.map(f => '<code style="font-size:0.7rem">' + escapeHTML(f) + '</code>').join(', ')}</div>`
+              : '';
+            div.innerHTML = `<span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;color:var(--success)"><polyline points="20 6 9 17 4 12"/></svg> Team completato</span><span>${data.subtasks ? data.subtasks.length + ' sotto-task eseguiti' : 'Task completato'}</span>${filesInfo}`;
+            msgEl.appendChild(div);
+
+            // Build Final Report Panel
+            if (teamReport.length > 0) {
+              // If files were already created, mark as implemented
+              addFinalReport(msgEl, teamReport, task, createdFiles.length > 0);
+            }
+
+            // Store context for follow-up conversations
+            const reportText = teamReport.map(r => `## ${r.name} (${r.role})\n${r.message}${r.details ? '\n\nDettagli:\n' + r.details : ''}`).join('\n\n---\n\n');
+            agentChatContext = { task, reportText };
+
+            // Save agent chat to history
+            saveAgentChatToHistory(task, teamReport, selected);
+
+            // Switch UI to follow-up mode
+            const taskInput = document.getElementById('agentChatTask');
+            taskInput.placeholder = 'Continua la conversazione... chiedi modifiche o chiarimenti';
+            const runBtn = document.getElementById('btnRunAgentChat');
+            runBtn.textContent = 'Invia';
+            runBtn.style.background = 'var(--accent)';
+            runBtn.style.color = '#fff';
+          }
+        } catch (e) { console.error('SSE event parse error:', e, line && line.slice(0,200)); }
+      }
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      const div = document.createElement('div');
+      div.className = 'whatsapp-bubble error';
+      div.innerHTML = `<div class="wa-body" style="text-align:center;width:100%"><span style="color:var(--error)">❌ ${escapeHTML(err.message)}</span></div>`;
+      msgEl.appendChild(div);
+    }
+  }
+
+  msgEl.scrollTop = msgEl.scrollHeight;
+  document.getElementById('btnRunAgentChat').disabled = false;
+  document.getElementById('btnStopAgentChat2').style.display = 'none';
+  document.getElementById('taskInputArea').style.display = 'flex';
+  document.getElementById('interventionBar').style.display = 'none';
+  agentChatController = null;
+  agentChatSessionId = null;
+}
+
+async function sendIntervention() {
+  const input = document.getElementById('interventionInput');
+  const message = input.value.trim();
+  if (!message || !agentChatSessionId) { showToast('Attendi che la chat sia pronta...', 'warning'); return; }
+  input.value = '';
+
+  // Show immediately in chat
+  const msgEl = document.getElementById('agentChatMessages');
+  const div = document.createElement('div');
+  div.className = 'whatsapp-intervention sent';
+  div.id = 'intervention-' + Date.now();
+  div.innerHTML = `<div class="wa-intervention-label">⚡ Invio in corso...</div><div class="wa-intervention-text">${escapeHTML(message)}</div>`;
+  msgEl.appendChild(div);
+  msgEl.scrollTop = msgEl.scrollHeight;
+
+  try {
+    const resp = await fetch(`${API}/api/orchestrator/intervene`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: agentChatSessionId, message })
+    });
+    const data = await resp.json();
+    // Update the label based on response
+    if (data.direct) {
+      div.querySelector('.wa-intervention-label').textContent = '⚡ Intervento diretto — agente interrotto';
+    } else {
+      div.querySelector('.wa-intervention-label').textContent = '💬 Tu — in coda';
+    }
+  } catch { div.querySelector('.wa-intervention-label').textContent = '💬 Tu'; }
+}
+
+// ─── Permission Dialog ─────────────────────────────────────────
+let _permissionResolver = null;
+
+function showPermissionDialog(path, tool) {
+  return new Promise((resolve) => {
+    _permissionResolver = resolve;
+    document.getElementById('permPath').textContent = path;
+    const toolLabel = { read_file: '📄 Leggere file', write_file: '✏️ Scrivere file', list_directory: '📁 Elencare directory', search_files: '🔍 Cercare nei file' };
+    document.getElementById('permTool').textContent = toolLabel[tool] || tool;
+    const chk = document.getElementById('permSubdirs');
+    if (chk) chk.checked = true;
+    document.getElementById('permissionModal').style.display = 'flex';
+  });
+}
+
+function resolvePermission(allowed) {
+  const chk = document.getElementById('permSubdirs');
+  const remember = chk ? chk.checked : true;
+  document.getElementById('permissionModal').style.display = 'none';
+  if (_permissionResolver) {
+    _permissionResolver({ allowed, remember });
+    _permissionResolver = null;
+  }
+}
+
+function toggleDetails(btn) {
+  const bubble = btn.closest('.whatsapp-bubble');
+  const detailsDiv = bubble.querySelector('.wa-details');
+  const isVisible = detailsDiv.style.display !== 'none';
+  detailsDiv.style.display = isVisible ? 'none' : 'block';
+  btn.querySelector('span').textContent = isVisible ? 'Dettagli' : 'Nascondi';
+  btn.querySelector('svg').style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+  const msgEl = document.getElementById('agentChatMessages');
+  if (msgEl) msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+function toggleTaskHeader(e) {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const headerText = document.getElementById('taskHeaderText');
+  const isExpanded = btn.getAttribute('data-expanded') === '1';
+  if (isExpanded) {
+    headerText.innerHTML = '<strong>' + btn.getAttribute('data-short') + '</strong>';
+    btn.querySelector('span').textContent = 'Espandi';
+    btn.querySelector('svg').style.transform = 'rotate(0deg)';
+    btn.setAttribute('data-expanded', '0');
+  } else {
+    headerText.innerHTML = '<strong>' + btn.getAttribute('data-full') + '</strong>';
+    btn.querySelector('span').textContent = 'Riduci';
+    btn.querySelector('svg').style.transform = 'rotate(180deg)';
+    btn.setAttribute('data-expanded', '1');
+  }
+}
+
+function addFinalReport(msgEl, teamReport, task, alreadyImplemented) {
+  let reportHTML = teamReport.map((r, i) => {
+    const iconHTML = agentIconHTML(r.icon, '16px');
+    const detailsBlock = r.details ? `<div style="margin-top:6px;padding:8px 12px;background:var(--surface);border-radius:6px;font-size:0.78rem;color:var(--text2);white-space:pre-wrap;line-height:1.5;max-height:200px;overflow-y:auto">${formatMarkdown(r.details)}</div>` : '';
+    return `<div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span style="width:24px;height:24px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconHTML}</span>
+        <strong style="color:var(--accent);font-size:0.82rem">${escapeHTML(r.name)}</strong>
+        <span style="font-size:0.68rem;color:var(--text3)">${escapeHTML(r.role)}</span>
+      </div>
+      <p style="margin:4px 0;color:var(--text);font-size:0.85rem;line-height:1.5">${escapeHTML(r.message)}</p>
+      ${detailsBlock}
+    </div>`;
+  }).join('');
+
+  const reportText = teamReport.map(r =>
+    `## ${r.name} (${r.role})\n${r.message}${r.details ? '\n\nDettagli:\n' + r.details : ''}`
+  ).join('\n\n---\n\n');
+
+  const reportDiv = document.createElement('div');
+  reportDiv.className = 'whatsapp-report';
+  reportDiv.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <strong style="font-size:0.95rem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Report Finale</strong>
+      <button class="btn btn-outline" onclick="copyFinalReport(this)" style="font-size:0.72rem;padding:5px 12px;border-radius:14px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copia tutto
+      </button>
+    </div>
+    ${reportHTML}
+    ${alreadyImplemented ? `
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:12px 24px;font-size:0.85rem;font-weight:600;background:var(--surface2);color:var(--success);border:1px solid var(--success);border-radius:10px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ✅ File già creati dal team — tutto implementato!
+    </div>` : `
+    <button class="btn btn-accent" onclick="implementFromAgentChat(this)" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:12px 24px;font-size:0.95rem;font-weight:700;background:var(--success);color:#fff;border:none;border-radius:10px;cursor:pointer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> OK, procedi con lo sviluppo
+    </button>`}
+  `;
+  // Store raw text and task for copy + implement
+  reportDiv._reportText = reportText;
+  reportDiv._task = task || '';
+  msgEl.appendChild(reportDiv);
+  msgEl.scrollTop = msgEl.scrollHeight;
+}
+
+function copyFinalReport(btn) {
+  const reportDiv = btn.closest('.whatsapp-report');
+  const text = reportDiv._reportText || '';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><polyline points="20 6 9 17 4 12"/></svg> Copiato!';
+      setTimeout(() => {
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copia tutto';
+      }, 2000);
+    }).catch(() => {});
+  }
+}
+
+async function implementFromAgentChat(btn) {
+  const reportDiv = btn.closest('.whatsapp-report');
+  const task = reportDiv._task || '';
+  const planText = reportDiv._reportText || '';
+
+  if (!task && !planText) { showToast('Nessun piano da implementare', 'error'); return; }
+
+  // Generate a project folder name from the task
+  const projectName = task.slice(0, 40).replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase() || 'progetto';
+  const projectDir = `projects/${projectName}`;
+
+  // Build a comprehensive prompt for the Developer
+  const prompt = `## Task da implementare
+${task}
+
+## Piano elaborato dal team
+${planText}
+
+## ISTRUZIONI IMPORTANTI
+1. DEVI creare TUTTI i file dentro la cartella "${projectDir}/"
+2. Per creare un file, usa il formato MULTI-LINEA (NON usare JSON!):
+
+[TOOL:write_file]
+path: ${projectDir}/index.html
+\`\`\`html
+<!DOCTYPE html>
+<html>
+...codice completo...
+</html>
+\`\`\`
+
+3. Il contenuto NON deve essere escape-ato — scrivilo normalmente tra i triple backtick
+4. Il path DEVE sempre iniziare con "${projectDir}/"
+
+Crea tutti i file necessari. NON descrivere — CREA DAVVERO.`;
+
+  // Create implementation section in agent chat messages
+  const msgEl = document.getElementById('agentChatMessages');
+  const implDiv = document.createElement('div');
+  implDiv.className = 'whatsapp-report';
+  implDiv.style.borderLeft = '3px solid var(--accent)';
+  implDiv.id = 'implementationSection';
+  implDiv.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <strong style="font-size:0.9rem;color:var(--accent)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><polygon points="5 3 19 12 5 21 5 3"/></svg> Developer — Implementazione in corso...</strong>
+      <button class="btn btn-danger" onclick="stopImplementation()" id="btnStopImpl" style="font-size:0.68rem;padding:3px 10px;border-radius:10px">STOP</button>
+    </div>
+    <div id="implOutput" style="font-size:0.78rem;max-height:400px;overflow-y:auto;background:var(--surface);padding:10px;border-radius:6px;font-family:monospace;white-space:pre-wrap;line-height:1.6">
+      <div class="agent-thinking"><div class="thinking-indicator"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div> Avvio Developer...</div>
+    </div>
+    <div id="implFiles" style="margin-top:8px;font-size:0.72rem;color:var(--text2)"></div>
+  `;
+  msgEl.appendChild(implDiv);
+  msgEl.scrollTop = msgEl.scrollHeight;
+
+  // Disable all implement buttons
+  document.querySelectorAll('.whatsapp-report .btn-accent').forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+
+  const output = document.getElementById('implOutput');
+  const filesList = document.getElementById('implFiles');
+  const stopBtn = document.getElementById('btnStopImpl');
+  let createdFiles = [];
+  let implController = new AbortController();
+
+  // Store controller globally for stop button
+  window._implController = implController;
+
+  stopBtn.onclick = function() {
+    implController.abort();
+    output.innerHTML += '\n⏹️ Implementazione fermata.';
+    stopBtn.style.display = 'none';
+    window._implController = null;
+  };
+
+  try {
+    const res = await fetch(`${API}/api/agent/run`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ agentId: 'developer', task: prompt }),
+      signal: implController.signal
+    });
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    output.innerHTML = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n'); buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'agent_thinking') {
+            output.innerHTML += `<div style="color:var(--accent);font-size:0.7rem;margin:2px 0">🧠 Step ${data.iteration} — ${escapeHTML(data.agent || 'thinking')}...</div>`;
+          } else if (data.type === 'agent_reasoning') {
+            const last = output.lastElementChild;
+            if (last && last.classList.contains('impl-reasoning')) {
+              last.textContent += data.content;
+            } else {
+              const d = document.createElement('div');
+              d.className = 'impl-reasoning';
+              d.style.cssText = 'color:var(--text2);font-size:0.7rem;font-style:italic;margin:2px 0';
+              d.textContent = data.content;
+              output.appendChild(d);
+            }
+          } else if (data.type === 'tool_call') {
+            let parsedArgs = {};
+            try { parsedArgs = typeof data.args === 'string' ? JSON.parse(data.args) : (data.args || {}); } catch {}
+            const argPreview = JSON.stringify(parsedArgs).slice(0, 120);
+            output.innerHTML += `<div style="color:var(--warning);margin:2px 0">🔧 <strong>${escapeHTML(data.name)}</strong> ${escapeHTML(argPreview)}</div>`;
+            if (data.name === 'write_file' && parsedArgs.path) {
+              createdFiles.push(parsedArgs.path);
+            }
+          } else if (data.type === 'tool_result') {
+            // Try to extract the actual path from the tool result
+            try {
+              const r = data.result;
+              if (r && r.output && r.output.includes('File scritto:')) {
+                // Already captured via tool_call, but we can show it
+              }
+            } catch {}
+            output.innerHTML += `<div style="color:var(--success);font-size:0.68rem;margin-left:8px">✅ Completato</div>`;
+          } else if (data.type === 'permission_required') {
+            const permRes = await showPermissionDialog(data.path, data.tool);
+            const allowed = typeof permRes === 'object' ? permRes.allowed : permRes;
+            const remember = typeof permRes === 'object' ? permRes.remember : true;
+            try {
+              await fetch(`${API}/api/permission/respond`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ permissionId: data.permissionId, allow: allowed, remember })
+              });
+            } catch {}
+          } else if (data.type === 'agent_text') {
+            output.innerHTML += `<div style="margin-top:6px;color:var(--text)">${formatMarkdown(data.content)}</div>`;
+          } else if (data.type === 'agent_error') {
+            output.innerHTML += `<div style="color:var(--error);margin:2px 0">❌ ${data.error}</div>`;
+          }
+        } catch {}
+      }
+      output.scrollTop = output.scrollHeight;
+    }
+
+    // Done — update header
+    implDiv.querySelector('strong').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><polyline points="20 6 9 17 4 12"/></svg> Developer — Implementazione completata`;
+    stopBtn.style.display = 'none';
+
+    if (createdFiles.length > 0) {
+      const basePath = 'D:\\Claude-Code_OmniRoute-Usb-main\\Claude-Code_OmniRoute-Usb-main';
+      filesList.innerHTML = `<div style="margin-top:10px;padding:12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--success)">
+        <strong style="color:var(--success);font-size:0.82rem">📁 File creati (${createdFiles.length}) — ${projectDir}/</strong>
+        <div style="margin-top:6px">${createdFiles.map(f => `<code style="font-size:0.72rem;display:block;padding:2px 0">📄 ${escapeHTML(basePath)}\\${escapeHTML(f.replace(/\//g, '\\'))}</code>`).join('')}</div>
+        <div style="margin-top:8px;font-size:0.65rem;color:var(--text3)">💡 Apri la cartella: <code style="cursor:pointer;color:var(--accent)" onclick="navigator.clipboard.writeText('${basePath}\\\\${projectDir.replace(/\//g, '\\\\')}')">${basePath}\\${projectDir.replace(/\//g, '\\')}</code> (clicca per copiare)</div>
+      </div>`;
+    } else {
+      filesList.innerHTML = `<div style="margin-top:10px;padding:12px;background:var(--surface);border-radius:8px;border-left:3px solid var(--warning)">
+        <strong style="color:var(--warning);font-size:0.82rem">⚠️ Nessun file rilevato</strong>
+        <div style="margin-top:4px;font-size:0.72rem;color:var(--text2)">Il Developer ha risposto ma non ha chiamato il tool write_file. Prova a rifare l'implementazione.</div>
+      </div>`;
+    }
+
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      output.innerHTML += `<div style="color:var(--error);margin-top:8px">❌ Errore: ${err.message}</div>`;
+    }
+  } finally {
+    window._implController = null;
+    // Re-enable implement buttons
+    document.querySelectorAll('.whatsapp-report .btn-accent').forEach(b => { b.disabled = false; b.style.opacity = '1'; });
+  }
+}
+
+function stopImplementation() {
+  if (window._implController) {
+    window._implController.abort();
+    window._implController = null;
+  }
+}
+
+function newAgentChat() {
+  // Abort any running agent chat + implementation
+  if (agentChatController) { agentChatController.abort(); agentChatController = null; }
+  stopImplementation();
+
+  // Clear the messages area
+  const msgEl = document.getElementById('agentChatMessages');
+  if (msgEl) msgEl.innerHTML = '';
+
+  // Reset state
+  agentChatId = null;
+  agentChatSessionId = null;
+  agentChatContext = null; // Clear follow-up context
+
+  // Show task input, hide intervention bar (safe: only if elements exist)
+  const taskArea = document.getElementById('taskInputArea');
+  const intervBar = document.getElementById('interventionBar');
+  const runBtn = document.getElementById('btnRunAgentChat');
+  const stopBtn = document.getElementById('btnStopAgentChat2');
+  const taskInput = document.getElementById('agentChatTask');
+  if (taskArea) taskArea.style.display = 'flex';
+  if (intervBar) intervBar.style.display = 'none';
+  if (runBtn) { runBtn.disabled = false; runBtn.textContent = 'Esegui'; runBtn.style.background = ''; runBtn.style.color = ''; }
+  if (stopBtn) stopBtn.style.display = 'none';
+  if (taskInput) { taskInput.value = ''; taskInput.placeholder = 'Descrivi il task da assegnare al team...'; }
+
+  // Show toast only if called from the UI button (check if agent chat page is visible)
+  const agentPage = document.getElementById('agentChatPage');
+  if (agentPage && agentPage.classList.contains('visible')) {
+    showToast('Nuova chat pronta', 'success');
+  }
+}
+
+function stopAgentChat() {
+  if (agentChatController) { agentChatController.abort(); agentChatController = null; }
+  stopImplementation();
+
+  // Preserve context from displayed messages so "riprendi" can continue
+  const msgEl = document.getElementById('agentChatMessages');
+  const taskHeader = msgEl ? msgEl.querySelector('.whatsapp-chat-header') : null;
+  const taskTitle = taskHeader ? (taskHeader.getAttribute('title') || taskHeader.textContent || '') : '';
+  // Collect all visible bubble texts for context
+  const bubbles = msgEl ? msgEl.querySelectorAll('.whatsapp-bubble') : [];
+  const displayedTexts = [];
+  bubbles.forEach(b => {
+    const nameEl = b.querySelector('.wa-name');
+    const textEl = b.querySelector('.wa-text');
+    const name = nameEl ? nameEl.textContent : 'Agente';
+    const text = textEl ? textEl.textContent : '';
+    if (text) displayedTexts.push(`[${name}]: ${text}`);
+  });
+  if (displayedTexts.length > 0 && taskTitle) {
+    // Also collect user interventions sent during this chat
+    const interventionEls = msgEl ? msgEl.querySelectorAll('.whatsapp-intervention.sent .wa-intervention-text') : [];
+    const interventionTexts = [];
+    interventionEls.forEach(el => { if (el.textContent) interventionTexts.push(el.textContent); });
+    agentChatContext = {
+      task: taskTitle,
+      reportText: displayedTexts.join('\n\n'),
+      partial: true,  // Mark as partial (chat was stopped mid-execution)
+      interventions: interventionTexts.length > 0 ? interventionTexts : undefined
+    };
+  }
+
+  document.getElementById('btnRunAgentChat').disabled = false;
+  document.getElementById('btnStopAgentChat2').style.display = 'none';
+  document.getElementById('taskInputArea').style.display = 'flex';
+  document.getElementById('interventionBar').style.display = 'none';
+  agentChatSessionId = null;
+  // Switch to follow-up mode if we have context
+  const runBtn = document.getElementById('btnRunAgentChat');
+  const taskInput = document.getElementById('agentChatTask');
+  if (agentChatContext && agentChatContext.task) {
+    if (runBtn) { runBtn.textContent = 'Invia'; runBtn.style.background = 'var(--accent)'; runBtn.style.color = '#fff'; }
+    if (taskInput) taskInput.placeholder = 'Continua la conversazione... chiedi modifiche o chiarimenti';
+  } else {
+    if (runBtn) { runBtn.textContent = 'Esegui'; runBtn.style.background = ''; runBtn.style.color = ''; }
+    if (taskInput) taskInput.placeholder = 'Descrivi il task da assegnare al team...';
+  }
+}
+
+// Simple markdown-to-HTML formatter for details
+function formatMarkdown(text) {
+  let html = escapeHTML(text);
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:0.85em">$1</code>');
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre style="background:var(--surface2);padding:12px;border-radius:6px;overflow-x:auto;font-size:0.8rem;margin:8px 0"><code>$2</code></pre>');
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h4 style="margin:8px 0 4px;font-size:0.9rem">$1</h4>');
+  html = html.replace(/^## (.+)$/gm, '<h3 style="margin:10px 0 4px;font-size:0.95rem">$1</h3>');
+  // List items
+  html = html.replace(/^[\s]*[-*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul style="margin:4px 0;padding-left:20px">$1</ul>');
+  // Numbered list
+  html = html.replace(/^[\s]*\d+[\.\)] (.+)$/gm, '<li>$1</li>');
+  // Line breaks
+  html = html.replace(/\n\n/g, '<br><br>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  html.dataset.theme = next;
+  localStorage.setItem('theme', next);
+}
+
+// â”€â”€â”€ Page Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const pages = { chat:'chatPage', agents:'agentsPage', agentchat:'agentChatPage', setup:'setupPage', system:'systemPage', updates:'updatesPage' };
+const tabs = { chat:'tabChat', agents:'tabAgents', agentchat:'tabAgentChat', setup:'tabSetup', system:'tabSystem', updates:'tabUpdates' };
+
+function switchPage(name) {
+  // Hide all
+  document.getElementById('chatPage').classList.remove('visible');
+  Object.values(pages).forEach(id => { const p = document.getElementById(id); if (p) p.classList.remove('visible'); });
+  Object.values(tabs).forEach(id => { const t = document.getElementById(id); if (t) t.classList.remove('active'); });
+
+  // Show target
+  if (name === 'chat') {
+    document.getElementById('chatPage').classList.add('visible');
+  } else {
+    document.getElementById(pages[name]).classList.add('visible');
+  }
+  const tabEl = document.getElementById(tabs[name]);
+  if (tabEl) tabEl.classList.add('active');
+
+  if (name === 'system') loadSystemInfo();
+  if (name === 'updates') checkUpdates();
+  if (name === 'agents') loadAgentsPage();
+  if (name === 'agentchat') loadAgentChatSelector();
+  if (name === 'setup') goStep(1);
+
+}
+
+// â”€â”€â”€ Chat History List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function loadChatList() {
+  try {
+    const res = await fetch(`${API}/api/chats`);
+    const { chats } = await res.json();
+    const el = document.getElementById('chatList');
+    if (!chats.length) {
+      el.innerHTML = '<div style="padding:12px 16px;font-size:0.75rem;color:var(--text3)">No conversations yet</div>';
+      return;
+    }
+    el.innerHTML = chats.map(c => `
+      <div class="chat-item${(c.type==='agent-chat'?agentChatId===c.id:currentChatId===c.id)?' active':''}" onclick="openChatById('${c.id}')">
+        <div style="min-width:0">
+          <div class="chat-item-title">${c.type === 'agent-chat' ? '<span class="badge" style="background:var(--accent);color:#fff;font-size:0.58rem;padding:1px 5px;border-radius:4px;margin-right:4px">TEAM</span>' : ''}${escHtml(c.title)}</div>
+          <div class="chat-item-meta">${c.messageCount} msgs · ${relativeTime(c.updated)}</div>
+        </div>
+        <button class="chat-item-del" onclick="confirmDeleteChat(event,'${c.id}','${escHtml(c.title).replace(/'/g,"\\'")}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    `).join('');
+  } catch {}
+}
+
+async function openChatById(id) {
+  try {
+    const res = await fetch(`${API}/api/chats/${id}`);
+    const chat = await res.json();
+    if (chat.error) { localStorage.removeItem('activeChatId'); return; }
+
+    // Agent chats open in the agent chat page, not regular chat
+    if (chat.type === 'agent-chat') {
+      agentChatId = id;
+      loadChatList();
+      switchPage('agentchat');
+      // Load the chat content into agent chat messages area
+      const msgEl = document.getElementById('agentChatMessages');
+      if (msgEl && chat.messages && chat.messages.length > 0) {
+        let html = `<div class="whatsapp-chat-header" style="cursor:default">
+          <strong>${escHtml(chat.title)}</strong>
+          <span style="font-size:0.7rem;color:var(--text3)">(salvata)</span>
+        </div>`;
+        for (const m of chat.messages) {
+          if (m.role === 'user') {
+            html += `<div class="whatsapp-bubble" style="border-left-color:var(--accent)">
+              <div class="wa-avatar">👤</div>
+              <div class="wa-body">
+                <div class="wa-name">Tu</div>
+                <div class="wa-text">${formatMarkdown(m.content)}</div>
+              </div>
+            </div>`;
+          } else {
+            html += `<div class="whatsapp-bubble">
+              <div class="wa-avatar">🤖</div>
+              <div class="wa-body">
+                <div class="wa-name">Team Report</div>
+                <div class="wa-text">${formatMarkdown(m.content)}</div>
+              </div>
+            </div>`;
+          }
+        }
+        msgEl.innerHTML = html;
+        // Hide input area since this is a saved chat
+        document.getElementById('taskInputArea').style.display = 'none';
+        document.getElementById('interventionBar').style.display = 'none';
+      }
+      return;
+    }
+
+    currentChatId = id;
+    localStorage.setItem('activeChatId', id);
+    chatMessages = chat.messages || [];
+    renderMessages(chatMessages);
+    document.getElementById('topbarTitle').textContent = chat.title;
+    // Hide mode toggle for existing chats
+    if (chatMessages.length > 0) { modeLocked = true; document.getElementById('modeToggle').style.display = 'none'; }
+    else { resetMode(); }
+    loadChatList();
+    switchPage('chat');
+  } catch {}
+}
+
+let _pendingDeleteId = null;
+
+function confirmDeleteChat(e, id, title) {
+  e.stopPropagation();
+  _pendingDeleteId = id;
+  document.getElementById('modalBody').textContent = `"${title}" will be permanently deleted and cannot be recovered.`;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+async function executeDelete() {
+  const id = _pendingDeleteId;  // Save BEFORE closeModal() clears it
+  closeModal();
+  if (!id) return;
+  try {
+    const res = await fetch(`${API}/api/chats/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      if (currentChatId === id) {
+        currentChatId = null;
+        localStorage.removeItem('activeChatId');
+        chatMessages = [];
+        document.getElementById('messages').innerHTML = '';
+        document.getElementById('messages').style.display = 'none';
+        document.getElementById('welcomeScreen').style.display = 'flex';
+        document.getElementById('topbarTitle').textContent = 'Portable AI';
+      }
+      if (agentChatId === id) {
+        agentChatId = null;
+        newAgentChat(); // Reset agent chat UI
+      }
+      showToast('Conversation deleted');
+      loadChatList();
+    } else {
+      showToast('Failed to delete','error');
+    }
+  } catch { showToast('Failed to delete','error'); }
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').style.display = 'none';
+  _pendingDeleteId = null;
+}
+
+async function startNewChat() {
+  try {
+    const res = await fetch(`${API}/api/chats`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ title:'New Conversation' }) });
+    const { id } = await res.json();
+    currentChatId = id;
+    localStorage.setItem('activeChatId', id);
+    chatMessages = [];
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('messages').style.display = 'none';
+    document.getElementById('welcomeScreen').style.display = 'flex';
+    document.getElementById('topbarTitle').textContent = 'New Conversation';
+    resetMode();
+    loadChatList();
+    switchPage('chat');
+    document.getElementById('chatInput').focus();
+  } catch { showToast('Failed to create conversation','error'); }
+}
+
+async function saveAgentChatToHistory(task, teamReport, selectedAgents) {
+  try {
+    const title = task.slice(0, 60);
+    const res = await fetch(`${API}/api/chats`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title })
+    });
+    const { id } = await res.json();
+
+    // Build a rich conversation record
+    const messages = [
+      { role: 'user', content: task },
+      { role: 'assistant', content: `**Team Chat** (${selectedAgents.length} agenti)\n\n${teamReport.map(r => `### ${r.name}\n${r.shortMsg}\n\n<details><summary>Dettagli</summary>\n\n${r.details || ''}\n</details>`).join('\n\n')}` }
+    ];
+
+    await fetch(`${API}/api/chats/${id}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id, title, messages,
+        created: new Date().toISOString(), updated: new Date().toISOString(),
+        type: 'agent-chat', agentCount: selectedAgents.length
+      })
+    });
+
+    // Store in agentChatId — keeps it separate from regular chat's currentChatId
+    agentChatId = id;
+    loadChatList();
+  } catch (e) {
+    console.error('Failed to save agent chat:', e);
+  }
+}
+
+// â”€â”€â”€ Mode Toggle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function setMode(mode) {
+  if (modeLocked) return;
+  currentMode = mode;
+  document.getElementById('modeNormal').className = 'mode-pill' + (mode === 'normal' ? ' active-normal' : '');
+  document.getElementById('modeLimitless').className = 'mode-pill' + (mode === 'limitless' ? ' active-limitless' : '');
+}
+
+function lockMode() {
+  modeLocked = true;
+  document.getElementById('modeToggle').style.display = 'none';
+}
+
+function resetMode() {
+  modeLocked = false;
+  currentMode = 'normal';
+  document.getElementById('modeToggle').style.display = 'flex';
+  document.getElementById('modePills').classList.remove('mode-locked');
+  setMode('normal');
+}
+
+function toggleAgent(enabled) {
+  agentMode = enabled;
+  localStorage.setItem('agentMode', enabled);
+  document.getElementById('workdirBar').style.display = enabled ? 'flex' : 'none';
+  document.getElementById('chatInput').placeholder = enabled ? 'Ask agent to create files, run commands...' : 'Message AI...';
+  if (enabled) loadWorkDir();
+}
+
+function toggleWebSearch(enabled) {
+  webSearchEnabled = enabled;
+  localStorage.setItem('webSearch', enabled);
+}
+
+async function loadWorkDir() {
+  try { const r = await fetch(`${API}/api/workdir`); const d = await r.json(); workDir = d.workDir; document.getElementById('workdirPath').textContent = workDir; } catch {}
+}
+
+async function changeWorkDir() {
+  const newDir = prompt('Enter new working directory:', workDir);
+  if (!newDir) return;
+  try {
+    const r = await fetch(`${API}/api/workdir`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({path:newDir}) });
+    const d = await r.json();
+    if (d.success) { workDir = d.workDir; document.getElementById('workdirPath').textContent = workDir; showToast('Working directory updated','success'); }
+    else showToast(d.error || 'Invalid directory','error');
+  } catch { showToast('Failed to update directory','error'); }
+}
+
+// â”€â”€â”€ Chat Sending â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 180) + 'px';
+}
+function sendSuggestion(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+async function sendMessage() {
+  if (isStreaming) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (!cfg.AI_PROVIDER) { showToast('Please configure a provider first','error'); switchPage('setup'); return; }
+
+  if (!currentChatId) await startNewChat();
+  if (!modeLocked) lockMode();
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('messages').style.display = 'flex';
+
+  chatMessages.push({ role: 'user', content: text });
+  appendMessage({ role: 'user', content: text });
+  scrollToBottom();
+
+  // User message is saved server-side via /api/chat to avoid duplicates
+
+  const typingEl = document.createElement('div');
+  typingEl.className = 'message';
+  typingEl.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-body"><div class="msg-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+  document.getElementById('messages').appendChild(typingEl);
+  scrollToBottom();
+
+  isStreaming = true;
+  userScrolled = false;
+  document.getElementById('sendBtn').style.display = 'none';
+  document.getElementById('stopBtn').style.display = 'flex';
+
+  if (agentMode) {
+    await sendAgentMessage(text, typingEl);
+  } else {
+    await sendChatMessage(text, typingEl);
+  }
+
+  isStreaming = false;
+  streamController = null;
+  document.getElementById('sendBtn').style.display = 'flex';
+  document.getElementById('stopBtn').style.display = 'none';
+  document.getElementById('chatInput').focus();
+}
+
+async function sendChatMessage(text, typingEl) {
+  let aiMsgEl = null;
+  let fullText = '';
+  try {
+    streamController = new AbortController();
+    const res = await fetch(`${API}/api/chat`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: currentChatId, messages: chatMessages.slice(0, -1), userMessage: text, mode: currentMode, webSearch: webSearchEnabled }),
+      signal: streamController.signal,
+    });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    typingEl.remove();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      for (const line of chunk.split('\n').filter(l => l.startsWith('data: '))) {
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'delta') {
+            if (!aiMsgEl) aiMsgEl = appendMessage({ role: 'assistant', content: '' }, true);
+            fullText += data.content;
+            updateStreamingMessage(aiMsgEl, fullText);
+            scrollToBottom();
+          } else if (data.type === 'done') {
+            if (aiMsgEl) finalizeMessage(aiMsgEl, data.fullText || fullText);
+            fullText = data.fullText || fullText;
+            chatMessages.push({ role: 'assistant', content: fullText });
+            loadChatList();
+          } else if (data.type === 'error') {
+            typingEl.remove();
+            const errMsg = `⚠️ Error: ${data.content}`;
+            appendMessage({ role: 'assistant', content: errMsg });
+            chatMessages.push({ role: 'assistant', content: errMsg });
+            loadChatList();
+          }
+        } catch {}
+      }
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      if (aiMsgEl) finalizeMessage(aiMsgEl, fullText || '*(stopped)*');
+      if (fullText) chatMessages.push({ role: 'assistant', content: fullText });
+    } else { typingEl.remove(); appendMessage({ role: 'assistant', content: `⚠️ Error: ${err.message}` }); }
+  }
+}
+
+async function sendAgentMessage(text, typingEl) {
+  let aiMsgEl = null;
+  let fullText = '';
+  const toolCards = new Map();
+  let thinkingEl = null;
+  let thinkingContent = '';
+  let thinkingCount = 0;
+  try {
+    streamController = new AbortController();
+    const res = await fetch(`${API}/api/agent`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: currentChatId, messages: chatMessages.slice(0, -1), userMessage: text, mode: currentMode, webSearch: webSearchEnabled }),
+      signal: streamController.signal,
+    });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    typingEl.remove();
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'agent_thinking') {
+            thinkingCount = data.iteration;
+            if (!thinkingEl) {
+              thinkingEl = document.createElement('div');
+              thinkingEl.className = 'message';
+              thinkingEl.id = 'agentThinkingMsg';
+              thinkingEl.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-body"><div class="thinking-card">
+                <div class="thinking-header" onclick="toggleThinking()">
+                  <div class="thinking-pulse"></div>
+                  <span class="thinking-label">Thinking...</span>
+                  <span class="thinking-step">Step ${data.iteration}</span>
+                  <span class="thinking-arrow" id="thinkArrow">▼</span>
+                </div>
+                <div class="thinking-body" id="thinkBody"></div>
+              </div></div>`;
+              document.getElementById('messages').appendChild(thinkingEl);
+            } else {
+              const stepEl = thinkingEl.querySelector('.thinking-step');
+              if (stepEl) stepEl.textContent = `Step ${data.iteration}`;
+            }
+            scrollToBottom();
+          } else if (data.type === 'agent_reasoning') {
+            thinkingCount = data.iteration || thinkingCount;
+            if (!thinkingEl) {
+              thinkingEl = document.createElement('div');
+              thinkingEl.className = 'message';
+              thinkingEl.id = 'agentThinkingMsg';
+              thinkingEl.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-body"><div class="thinking-card">
+                <div class="thinking-header" onclick="toggleThinking()">
+                  <div class="thinking-pulse"></div>
+                  <span class="thinking-label">Thinking...</span>
+                  <span class="thinking-step">Step ${thinkingCount}</span>
+                  <span class="thinking-arrow" id="thinkArrow">▼</span>
+                </div>
+                <div class="thinking-body" id="thinkBody"></div>
+              </div></div>`;
+              document.getElementById('messages').appendChild(thinkingEl);
+            }
+            // Append reasoning content
+            if (thinkingContent) thinkingContent += '\n\n--- Step ' + thinkingCount + ' ---\n';
+            thinkingContent += data.content;
+            const bodyEl = document.getElementById('thinkBody');
+            if (bodyEl) bodyEl.textContent = thinkingContent;
+            // Auto-open if first reasoning
+            const arrow = document.getElementById('thinkArrow');
+            const body = document.getElementById('thinkBody');
+            if (arrow && body && !body.classList.contains('open')) {
+              body.classList.add('open');
+              arrow.classList.add('open');
+            }
+            const stepEl = thinkingEl.querySelector('.thinking-step');
+            if (stepEl) stepEl.textContent = `Step ${thinkingCount}`;
+            scrollToBottom();
+          } else if (data.type === 'tool_call') {
+            // Update thinking card to show it's acting
+            if (thinkingEl) {
+              const label = thinkingEl.querySelector('.thinking-label');
+              if (label) label.textContent = `Thinking → Acting`;
+            }
+            const card = createToolCard(data);
+            toolCards.set(data.id, card);
+            document.getElementById('messages').appendChild(card);
+            scrollToBottom();
+          } else if (data.type === 'approval_needed') {
+            const card = toolCards.get(data.id);
+            if (card) addApprovalButtons(card, data.id);
+            scrollToBottom();
+          } else if (data.type === 'permission_required') {
+            // Agent wants to access an external path — ask user
+            const permRes = await showPermissionDialog(data.path, data.tool);
+            const allowed = typeof permRes === 'object' ? permRes.allowed : permRes;
+            const remember = typeof permRes === 'object' ? permRes.remember : true;
+            try {
+              await fetch(`${API}/api/permission/respond`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ permissionId: data.permissionId, allow: allowed, remember })
+              });
+            } catch {}
+          } else if (data.type === 'tool_result') {
+            const card = toolCards.get(data.id);
+            if (card) updateToolCardResult(card, data);
+            scrollToBottom();
+          } else if (data.type === 'tool_rejected') {
+            const card = toolCards.get(data.id);
+            if (card) {
+              card.querySelector('.tool-status').className = 'tool-status rejected';
+              card.querySelector('.tool-status').textContent = 'Rejected';
+              const ab = card.querySelector('.approval-bar');
+              if (ab) ab.remove();
+            }
+          } else if (data.type === 'agent_text') {
+            // Finalize thinking card
+            if (thinkingEl) {
+              const pulse = thinkingEl.querySelector('.thinking-pulse');
+              const label = thinkingEl.querySelector('.thinking-label');
+              if (pulse) pulse.classList.add('done');
+              if (label) label.textContent = `Thought for ${thinkingCount} step${thinkingCount>1?'s':''}`;
+              // Collapse thinking
+              const arrow = document.getElementById('thinkArrow');
+              const body = document.getElementById('thinkBody');
+              if (arrow && body) { body.classList.remove('open'); arrow.classList.remove('open'); }
+            }
+            fullText = data.content;
+            if (!aiMsgEl) aiMsgEl = appendMessage({ role: 'assistant', content: '' }, false);
+            finalizeMessage(aiMsgEl, fullText);
+            scrollToBottom();
+          } else if (data.type === 'agent_error') {
+            if (thinkingEl) thinkingEl.remove();
+            const errMsg = `⚠️ Agent Error: ${data.error}`;
+            appendMessage({ role: 'assistant', content: errMsg });
+            chatMessages.push({ role: 'assistant', content: errMsg });
+            loadChatList();
+          } else if (data.type === 'done') {
+            // Finalize thinking
+            if (thinkingEl) {
+              const pulse = thinkingEl.querySelector('.thinking-pulse');
+              const label = thinkingEl.querySelector('.thinking-label');
+              if (pulse) pulse.classList.add('done');
+              if (label && thinkingCount > 0) label.textContent = `Thought for ${thinkingCount} step${thinkingCount>1?'s':''}`;
+            }
+            if (data.fullText) {
+              fullText = data.fullText;
+              chatMessages.push({ role: 'assistant', content: fullText });
+            }
+            loadChatList();
+          }
+        } catch {}
+      }
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      typingEl.remove();
+      appendMessage({ role: 'assistant', content: `⚠️ Error: ${err.message}` });
+    }
+  }
+}
+
+function toggleThinking() {
+  const arrow = document.getElementById('thinkArrow');
+  const body = document.getElementById('thinkBody');
+  if (arrow && body) {
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+}
+
+function createToolCard(data) {
+  const icons = { write_file:'📄', read_file:'📖', list_directory:'📁', execute_command:'⚡', search_files:'🔍' };
+  const el = document.createElement('div');
+  el.className = 'message';
+  const argsPreview = data.name === 'write_file' ? data.args.path : data.name === 'execute_command' ? data.args.command : data.name === 'read_file' ? data.args.path : data.name === 'list_directory' ? (data.args.path||'.') : data.args.pattern;
+  el.innerHTML = `
+    <div class="msg-avatar ai">AI</div>
+    <div class="msg-body"><div class="tool-card" id="tc_${data.id}">
+      <div class="tool-header" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span class="tool-icon">${icons[data.name]||'🔧'}</span>
+        <span class="tool-name">${data.name}(${escHtml(String(argsPreview||'').slice(0,60))})</span>
+        <span class="tool-status running">${data.needsApproval ? 'Pending' : 'Running'}</span>
+      </div>
+      <div class="tool-body">${data.name === 'write_file' ? escHtml(data.args.content||'').slice(0,2000) : JSON.stringify(data.args, null, 2)}</div>
+    </div></div>`;
+  return el;
+}
+
+function addApprovalButtons(card, callId) {
+  const tc = card.querySelector('.tool-card');
+  tc.querySelector('.tool-status').className = 'tool-status pending';
+  tc.querySelector('.tool-status').textContent = 'Needs Approval';
+  const bar = document.createElement('div');
+  bar.className = 'approval-bar';
+  bar.innerHTML = `<span class="approval-label">This action modifies your system. Allow?</span><button class="approve-btn yes" onclick="approveToolCall('${callId}',true,this)">✓ Approve</button><button class="approve-btn no" onclick="approveToolCall('${callId}',false,this)">✗ Reject</button>`;
+  tc.appendChild(bar);
+}
+
+async function approveToolCall(callId, approved, btn) {
+  const bar = btn.closest('.approval-bar');
+  bar.innerHTML = `<span class="approval-label">${approved ? 'Approved — executing...' : 'Rejected'}</span>`;
+  try { await fetch(`${API}/api/agent/approve`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({callId,approved}) }); } catch {}
+}
+
+function updateToolCardResult(card, data) {
+  const tc = card.querySelector('.tool-card');
+  const status = tc.querySelector('.tool-status');
+  const body = tc.querySelector('.tool-body');
+  const ab = tc.querySelector('.approval-bar');
+  if (ab) ab.remove();
+  if (data.result?.success) {
+    status.className = 'tool-status success';
+    status.textContent = 'Done';
+  } else {
+    status.className = 'tool-status rejected';
+    status.textContent = 'Failed';
+  }
+  // Update body with result
+  let resultText = '';
+  if (data.name === 'write_file') resultText = data.result?.message || 'File written';
+  else if (data.name === 'read_file') resultText = data.result?.content?.slice(0,3000) || data.result?.error || '';
+  else if (data.name === 'list_directory') resultText = (data.result?.entries||[]).map(e => `${e.type==='directory'?'📁':'📄'} ${e.name}${e.size?' ('+e.size+'b)':''}`).join('\n');
+  else if (data.name === 'execute_command') resultText = (data.result?.output||'') + (data.result?.error ? '\n[STDERR] '+data.result.error : '');
+  else if (data.name === 'search_files') resultText = data.result?.matches || data.result?.message || '';
+  else resultText = JSON.stringify(data.result, null, 2);
+  body.textContent = resultText || '(no output)';
+  body.classList.add('open');
+}
+
+function abortStream() {
+  if (streamController) {
+    streamController.abort();
+  }
+  if (agentStreamController) {
+    agentStreamController.abort();
+    document.getElementById('btnRunAgent') && (document.getElementById('btnRunAgent').disabled = false);
+    document.getElementById('btnRunTeam') && (document.getElementById('btnRunTeam').disabled = false);
+  }
+}
+
+function appendMessage(msg, streaming = false) {
+  const el = document.createElement('div');
+  el.className = `message ${msg.role}`;
+  const isUser = msg.role === 'user';
+  const contentHtml = isUser ? escHtml(msg.content).replace(/\n/g, '<br>') : renderMarkdown(msg.content) + (streaming ? '<span class="cursor"></span>' : '');
+  el.innerHTML = `
+    <div class="msg-avatar ${isUser ? 'user' : 'ai'}">${isUser ? '👤' : 'AI'}</div>
+    <div class="msg-body">
+      <div class="msg-name">${isUser ? 'You' : 'Assistant'}</div>
+      <div class="msg-bubble">${contentHtml}</div>
+    </div>`;
+  document.getElementById('messages').appendChild(el);
+  return el;
+}
+
+function updateStreamingMessage(el, text) {
+  const bubble = el.querySelector('.msg-bubble');
+  if (bubble) bubble.innerHTML = renderMarkdown(text) + '<span class="cursor"></span>';
+}
+
+function finalizeMessage(el, text) {
+  const bubble = el.querySelector('.msg-bubble');
+  if (bubble) bubble.innerHTML = renderMarkdown(text);
+}
+
+function renderMessages(msgs) {
+  const el = document.getElementById('messages');
+  if (!msgs.length) {
+    el.style.display = 'none';
+    document.getElementById('welcomeScreen').style.display = 'flex';
+    return;
+  }
+  el.style.display = 'flex';
+  document.getElementById('welcomeScreen').style.display = 'none';
+  el.innerHTML = '';
+  msgs.forEach(m => appendMessage(m));
+  scrollToBottom();
+}
+
+function scrollToBottom(force = false) {
+  const el = document.getElementById('messages');
+  if (force || !userScrolled) {
+    el.scrollTop = el.scrollHeight;
+  }
+}
+
+function initScrollTracking() {
+  const el = document.getElementById('messages');
+  el.addEventListener('scroll', () => {
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    userScrolled = distFromBottom > 80;
+  });
+}
+
+// â”€â”€â”€ Simple Markdown Renderer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function renderMarkdown(text) {
+  if (!text) return '';
+  let html = escHtml(text);
+
+  // Code blocks
+  html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code>${code.trim()}</code></pre>`);
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // Bold / italic
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Blockquote
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  // HR
+  html = html.replace(/^---$/gm, '<hr>');
+  // Unordered list
+  html = html.replace(/^[\*\-] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+  // Ordered list
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  // Links
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // Paragraphs
+  html = html.split(/\n\n+/).map(block => {
+    if (block.match(/^<(h[1-6]|ul|ol|blockquote|pre|hr)/)) return block;
+    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+  }).join('\n');
+
+  return html;
+}
+
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function relativeTime(iso) {
+  const d = new Date(iso), now = new Date();
+  const diff = (now - d) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return d.toLocaleDateString();
+}
+
+// â”€â”€â”€ Setup Wizard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function selectProvider(el) {
+  document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  setupState.provider = el.dataset.provider;
+  setupState.key = '';
+  setupState.model = '';
+  setupState.baseUrl = setupState.provider === 'lmstudio' ? 'http://localhost:1234/v1' : (setupState.provider === 'omniroute' ? 'http://localhost:20128/v1' : '');
+  document.getElementById('btnNext1').disabled = false;
+
+  // If OmniRoute, check status
+  if (setupState.provider === 'omniroute') checkOmniRouteStatus(el);
+}
+
+async function checkOmniRouteStatus(cardEl) {
+  try {
+    const res = await fetch(`${API}/api/omniroute/status`);
+    const st = await res.json();
+    const badge = cardEl.querySelector('.status-badge');
+    if (st.running) {
+      if (badge) { badge.textContent = `ONLINE (${st.models})`; badge.style.background = 'var(--success)'; }
+      else { const b = document.createElement('span'); b.className = 'status-badge'; b.style.cssText = 'font-size:0.6rem;padding:2px 8px;border-radius:10px;background:var(--success);color:#fff;margin-left:6px'; b.textContent = `ONLINE (${st.models})`; cardEl.querySelector('.name').appendChild(b); }
+    } else {
+      if (badge) { badge.textContent = 'OFFLINE'; badge.style.background = 'var(--error)'; }
+      else { const b = document.createElement('span'); b.className = 'status-badge'; b.style.cssText = 'font-size:0.6rem;padding:2px 8px;border-radius:10px;background:var(--error);color:#fff;margin-left:6px'; b.textContent = 'OFFLINE'; cardEl.querySelector('.name').appendChild(b); }
+    }
+  } catch {}
+}
+
+function prepareKeyStep(){
+  const p=setupState.provider;
+  const isLM=p==='lmstudio';
+  const isOmni=p==='omniroute';
+  const isCustom=p==='custom-openai';
+  const isLocal=isLM||isCustom||isOmni;
+  const title=document.getElementById('keyStepTitle');
+  const sub=document.getElementById('keyStepSubtitle');
+  const guide=document.getElementById('providerGuide');
+  const baseWrap=document.getElementById('baseUrlWrap');
+  const apiKey=document.getElementById('apiKey');
+  const baseUrl=document.getElementById('baseUrl');
+  document.getElementById('keyStatus').innerHTML='';
+  baseWrap.style.display=isLocal?'':'none';
+  guide.style.display=isLocal?'':'none';
+  apiKey.parentElement.style.display=isLM?'none':'';
+  apiKey.placeholder=(isOmni||isCustom)?'Optional for local providers':'sk-...';
+  baseUrl.value=isLM?'http://localhost:1234/v1':(isOmni?'http://localhost:20128/v1':(setupState.baseUrl||''));
+  title.textContent=isLM?'Connect LM Studio':isOmni?'Connect OmniRoute Gateway':isCustom?'Connect Custom API':'Enter API Key';
+  sub.textContent=isLM?'LM Studio must be running before verification':isOmni?'OmniRoute runs locally at localhost:20128 - API key is optional':isCustom?'Enter your OpenAI-compatible endpoint details':'Paste your provider API key below';
+  guide.innerHTML=isLM
+    ? 'In LM Studio, load a model, open <strong>Developer &gt; Local Server</strong>, then start the server. The default OpenAI-compatible base URL is <strong>http://localhost:1234/v1</strong>.'
+    : isOmni
+    ? 'OmniRoute is a unified AI gateway with <strong>290+ providers</strong> and support for chat, images, video, TTS, and more. Install it with <code>npm install -g omniroute</code> and run <code>omniroute</code>. Default endpoint: <strong>http://localhost:20128/v1</strong>.'
+    : 'Use the provider base URL that already includes <strong>/v1</strong>. This setup checks <strong>/models</strong> and then uses the same URL for chat requests.';
+}
+
+function goStep(n) {
+  for (let i=1;i<=4;i++){
+    document.getElementById(`sec${i}`).classList.toggle('visible',i===n);
+    const s=document.getElementById(`step${i}`);
+    s.classList.remove('active','done');
+    if(i<n)s.classList.add('done');
+    if(i===n)s.classList.add('active');
+  }
+  if(n===2&&(setupState.provider==='ollama'||setupState.provider==='omniroute'))goStep(3);
+  if(n===2)prepareKeyStep();
+  if(n===3)initModelStep();
+  if(n===4)initConfirmStep();
+}
+
+async function verifyKey() {
+  const isLM=setupState.provider==='lmstudio';
+  const isOmni=setupState.provider==='omniroute';
+  const isCustom=setupState.provider==='custom-openai';
+  const isLocal=isLM||isOmni||isCustom;
+  const key=isLM?'lm-studio':(isOmni?'not-needed':(document.getElementById('apiKey').value.trim()||(isCustom?'not-needed':'')));
+  const baseUrl=(document.getElementById('baseUrl')?.value||'').trim().replace(/\/+$/,'');
+  if(isLocal&&!baseUrl){showKeyStatus('Base URL cannot be empty','error');return;}
+  if(!key){showKeyStatus('API key cannot be empty','error');return;}
+  setupState.key=key;
+  setupState.baseUrl=baseUrl;
+  showKeyStatus('<div class="spinner"></div> Verifying...','loading');
+  document.getElementById('btnVerify').disabled=true;
+  try{
+    const res=await fetch(`${API}/api/verify-key`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:setupState.provider,key,baseUrl})});
+    const d=await res.json();
+    if(d.valid){showKeyStatus('✓ Verified','success');setTimeout(()=>goStep(3),600);}
+    else if(isLocal){showKeyStatus('Could not verify /models. You can still enter the model manually.','error');setTimeout(()=>goStep(3),900);}
+    else showKeyStatus('✗ Invalid or expired API key','error');
+  }catch{
+    if(isLocal){showKeyStatus('Verification failed. You can still enter the model manually.','error');setTimeout(()=>goStep(3),900);}
+    else showKeyStatus('✗ Verification failed','error');
+  }
+  document.getElementById('btnVerify').disabled=false;
+}
+
+function showKeyStatus(html,type){
+  const el=document.getElementById('keyStatus');
+  el.style.color={success:'var(--success)',error:'var(--error)',loading:'var(--text2)'}[type]||'var(--text2)';
+  el.innerHTML=html;
+}
+
+async function initModelStep(){
+  const isOR=setupState.provider==='openrouter';
+  const isOllama=setupState.provider==='ollama';
+  const isNvidia=setupState.provider==='nvidia';
+  const isDeepSeek=setupState.provider==='deepseek';
+  const isOpenAICompat=setupState.provider==='lmstudio'||setupState.provider==='custom-openai'||setupState.provider==='omniroute';
+  document.getElementById('tierToggle').style.display=isOR?'':'none';
+  document.getElementById('modelSearchWrap').style.display=(isOR||isOllama||isNvidia||isDeepSeek||isOpenAICompat)?'':'none';
+  document.getElementById('modelSearch').style.display=isOllama?'none':'';
+  document.getElementById('manualModelWrap').style.display=''; // Always show custom input
+  if(isOR) fetchModels(setupState.tier);
+  else if(isOllama) await fetchOllamaModels();
+  else if(isNvidia) await fetchNvidiaModels();
+  else if(isDeepSeek) await fetchDeepSeekModels();
+  else if(isOpenAICompat) await fetchOpenAICompatibleModels();
+  else { document.getElementById('manualModel').placeholder=`Default: ${defaults[setupState.provider]||''}`; }
+}
+
+async function fetchOllamaModels() {
+  const listEl=document.getElementById('modelList');
+  const loadEl=document.getElementById('modelLoading');
+  listEl.innerHTML='';loadEl.style.display='flex';
+  try{
+    const res=await fetch(`${API}/api/ollama/models`);
+    const d=await res.json();
+    if((d.models||[]).length === 0) {
+       listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">No local models found.<br><br>Close dashboard and run <strong>Setup_Local_Models.bat</strong> in the Windows folder first to download local models!</div>';
+    } else {
+       renderModels(d.models.map(m=>m.id));
+    }
+  }catch{listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">Failed to load local models.</div>';}
+  loadEl.style.display='none';
+}
+
+async function fetchNvidiaModels() {
+  const listEl=document.getElementById('modelList');
+  const loadEl=document.getElementById('modelLoading');
+  const curated = [
+    'moonshotai/kimi-k2-instruct', 'moonshotai/kimi-k2-thinking', 'z-ai/glm4.7',
+    'deepseek-ai/deepseek-v3.2', 'deepseek-ai/deepseek-v3.1-terminus', 'stepfun-ai/step-3.5-flash',
+    'mistralai/mistral-large-3-675b-instruct-2512', 'qwen/qwen3-coder-480b-a35b-instruct',
+    'mistralai/mistral-nemotron', 'bytedance/seed-oss-36b-instruct', 'mistralai/mamba-codestral-7b-v0.1',
+    'google/gemma-7b', 'tiiuae/falcon3-7b-instruct', 'minimaxai/minimax-m2.7'
+  ];
+  listEl.innerHTML='';loadEl.style.display='flex';
+  try{
+    const res=await fetch(`${API}/api/nvidia/models`);
+    const d=await res.json();
+    const liveModels=d.models||[];
+    // Prepend curated, remove duplicates
+    allModels=[...new Set([...curated, ...liveModels])];
+    renderModels(allModels);
+  }catch{
+    allModels=curated;
+    renderModels(allModels);
+  }
+  loadEl.style.display='none';
+}
+
+async function fetchDeepSeekModels() {
+  const listEl=document.getElementById('modelList');
+  const loadEl=document.getElementById('modelLoading');
+  listEl.innerHTML='';loadEl.style.display='flex';
+  // DeepSeek V4 models — these are the latest and work on both endpoints
+  const curated = [
+    { id: 'deepseek-v4-pro', name: 'DeepSeek V4 Pro — Modello principale, best per coding/ragionamento complesso' },
+    { id: 'deepseek-v4-flash', name: 'DeepSeek V4 Flash — Più veloce ed economico, ideale per chat e task semplici' }
+  ];
+  try{
+    const res=await fetch(`${API}/api/deepseek/models`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:setupState.key})});
+    const d=await res.json();
+    // Also try to get live models from API, but prefer our curated V4 list
+    const liveModels = (d.models||[]).filter(m => m.includes('v4') || m === 'deepseek-chat' || m === 'deepseek-reasoner');
+    // Merge: curated V4 models first, then any additional live models
+    const merged = [...curated.map(m => m.id), ...liveModels.filter(m => !curated.some(c => c.id === m))];
+    allModels = [...new Set(merged)];
+    if (!allModels.length) allModels = curated.map(m => m.id);
+    renderModels(allModels);
+  }catch{
+    allModels = curated.map(m => m.id);
+    renderModels(allModels);
+  }
+  loadEl.style.display='none';
+}
+
+async function fetchOpenAICompatibleModels() {
+  const listEl=document.getElementById('modelList');
+  const loadEl=document.getElementById('modelLoading');
+  listEl.innerHTML='';loadEl.style.display='flex';
+  try{
+    const res=await fetch(`${API}/api/openai-compatible/models`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({baseUrl:setupState.baseUrl,key:setupState.key})});
+    const d=await res.json();
+    allModels=d.models||[];
+    if(allModels.length) renderModels(allModels);
+    else listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">No models returned. Enter the model name manually below.</div>';
+  }catch{
+    allModels=[];
+    listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">Failed to load models. Enter the model name manually below.</div>';
+  }
+  loadEl.style.display='none';
+}
+
+async function fetchModels(tier){
+  const listEl=document.getElementById('modelList');
+  const loadEl=document.getElementById('modelLoading');
+  listEl.innerHTML='';loadEl.style.display='flex';
+  try{
+    // Pass API key for OpenRouter model discovery (user is in setup, config not yet saved)
+    const key = setupState.key || '';
+    const res=await fetch(`${API}/api/models?type=${tier}&key=${encodeURIComponent(key)}`);
+    const d=await res.json();
+    allModels=d.models||[];
+    if (allModels.length) renderModels(allModels);
+    else listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">Nessun modello trovato. Verifica la API key o inserisci il modello manualmente.</div>';
+  }catch{listEl.innerHTML='<div style="padding:14px;color:var(--text2);font-size:0.8rem">Failed to load models. Inserisci il modello manualmente.</div>';}
+  loadEl.style.display='none';
+}
+
+function renderModels(models){
+  document.getElementById('modelList').innerHTML=models.map(m=>
+    `<div class="model-item${setupState.model===m?' active':''}" onclick="pickModel('${m}',this)"><div class="dot"></div>${m}</div>`).join('');
+}
+
+function pickModel(id,el){setupState.model=id;document.querySelectorAll('.model-item').forEach(m=>m.classList.remove('active'));if(el)el.classList.add('active');}
+function filterModels(){const q=document.getElementById('modelSearch').value.toLowerCase();renderModels(allModels.filter(m=>m.toLowerCase().includes(q)));}
+function switchTier(tier,btn){setupState.tier=tier;setupState.model='';document.querySelectorAll('.tier-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');fetchModels(tier);}
+
+function initConfirmStep(){
+  document.getElementById('confirmProvider').textContent=providerNames[setupState.provider]||setupState.provider;
+  const model=setupState.model||document.getElementById('manualModel')?.value||defaults[setupState.provider]||'';
+  setupState.model=model;
+  document.getElementById('confirmModel').textContent=model||'—';
+  document.getElementById('confirmKey').textContent=setupState.key?`${setupState.key.slice(0,8)}...${setupState.key.slice(-4)}`:'None (Local)';
+}
+
+async function saveConfig(){
+  document.getElementById('btnSave').disabled=true;
+  document.getElementById('btnSave').innerHTML='<div class="spinner"></div> Saving...';
+  let config={};
+  if(setupState.provider==='openrouter')config={
+    AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',
+    OPENAI_API_KEY:setupState.key,
+    OPENAI_BASE_URL:'https://openrouter.ai/api/v1',
+    OPENAI_MODEL:setupState.model,
+    ANTHROPIC_BASE_URL:'https://openrouter.ai/api/v1',  // Same URL for Claude Code CLI (OpenRouter proxies both protocols)
+    ANTHROPIC_MODEL:setupState.model,
+    AI_DISPLAY_MODEL:setupState.model
+  };
+  else if(setupState.provider==='nvidia')config={AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:setupState.key,OPENAI_BASE_URL:'https://integrate.api.nvidia.com/v1',OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='deepseek')config={
+    AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',
+    OPENAI_API_KEY:setupState.key,
+    OPENAI_BASE_URL:'https://api.deepseek.com/v1',           // Dashboard (OpenAI compat)
+    OPENAI_MODEL:setupState.model||'deepseek-v4-pro',
+    ANTHROPIC_BASE_URL:'https://api.deepseek.com/anthropic', // Claude Code CLI
+    ANTHROPIC_MODEL:setupState.model||'deepseek-v4-pro',     // Same model for both endpoints
+    AI_DISPLAY_MODEL:setupState.model||'deepseek-v4-pro'
+  };
+  else if(setupState.provider==='lmstudio')config={AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:'lm-studio',OPENAI_BASE_URL:setupState.baseUrl||'http://localhost:1234/v1',OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='omniroute')config={AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:setupState.key||'not-needed',OPENAI_BASE_URL:setupState.baseUrl||'http://localhost:20128/v1',OPENAI_API_FORMAT:'chat_completions',OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model,OMNIROUTE_ENABLED:'1'};
+  else if(setupState.provider==='custom-openai')config={AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:setupState.key||'not-needed',OPENAI_BASE_URL:setupState.baseUrl,OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='gemini')config={AI_PROVIDER:'gemini',GEMINI_API_KEY:setupState.key,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='anthropic')config={AI_PROVIDER:'anthropic',ANTHROPIC_API_KEY:setupState.key,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='ollama')config={AI_PROVIDER:'ollama',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:'ollama',OPENAI_BASE_URL:'http://localhost:11434/v1',OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model};
+  else if(setupState.provider==='openai')config={AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',OPENAI_API_KEY:setupState.key,OPENAI_BASE_URL:'https://api.openai.com/v1',OPENAI_MODEL:setupState.model,AI_DISPLAY_MODEL:setupState.model};
+  // If OmniRoute selected, check and auto-start if needed
+  if (setupState.provider === 'omniroute') {
+    try {
+      const statusRes = await fetch(`${API}/api/omniroute/status`);
+      const status = await statusRes.json();
+      if (!status.running) {
+        showToast('OmniRoute non attivo. Avvio automatico...', 'warning');
+        document.getElementById('btnSave').innerHTML = '<div class="spinner"></div> Avvio OmniRoute...';
+        const startRes = await fetch(`${API}/api/omniroute/start`, { method: 'POST' });
+        const startStatus = await startRes.json();
+        if (startStatus.running) {
+          showToast(`OmniRoute avviato con ${startStatus.models} modelli`, 'success');
+        } else {
+          showToast('OmniRoute non risponde. Avvialo manualmente con "omniroute"', 'error');
+        }
+      } else {
+        showToast(`OmniRoute già attivo (${status.models} modelli)`, 'success');
+      }
+    } catch {}
+  }
+
+  try{
+    await fetch(`${API}/api/config`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
+    showToast('Configuration saved','success');
+    await loadConfig();
+    switchPage('chat');
+  }catch{showToast('Failed to save','error');}
+  document.getElementById('btnSave').disabled=false;
+  document.getElementById('btnSave').innerHTML='Save Configuration';
+}
+
+// â”€â”€â”€ System Info â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function loadSystemInfo(){
+  try{
+    const res=await fetch(`${API}/api/system`);
+    const d=await res.json();
+    document.getElementById('sysNode').textContent=d.nodeVersion||'—';
+    document.getElementById('sysPlatform').textContent=d.platform||'—';
+    document.getElementById('sysArch').textContent=d.arch||'—';
+    document.getElementById('sysEngine').textContent=d.engineVersion||'Not installed';
+    document.getElementById('sysGit').innerHTML=d.hasGit?`<span class="badge badge-success">${d.portableGit?'USB':'System'}</span>`:'<span class="badge badge-error">Not found</span>';
+    document.getElementById('sysPython').innerHTML=d.hasPython?`<span class="badge badge-success">${d.portablePython?'USB':'System'}</span>`:'<span class="badge badge-error">Not found</span>';
+
+    if (d.ollamaInstalled) {
+       document.getElementById('cardOllama').style.display='block';
+       try {
+         const oRes = await fetch(`${API}/api/ollama/status`);
+         const oData = await oRes.json();
+         document.getElementById('sysOllamaStatus').innerHTML = oData.running ? '<span class="badge badge-success">Running</span>' : '<span class="badge badge-error">Stopped</span>';
+
+         const actionsEl = document.getElementById('sysOllamaActions');
+         if (oData.running) {
+             actionsEl.innerHTML = `<button class="btn btn-outline" style="padding:5px 12px;font-size:0.75rem" onclick="toggleOllama('stop')">Stop</button>`;
+         } else {
+             actionsEl.innerHTML = `<button class="btn btn-primary" style="padding:5px 12px;font-size:0.75rem" onclick="toggleOllama('start')">Start</button>`;
+         }
+
+         const mRes = await fetch(`${API}/api/ollama/models`);
+         const mData = await mRes.json();
+         if(mData.models && mData.models.length>0) {
+             document.getElementById('sysOllamaModels').innerHTML = `<strong>Installed Models:</strong><br>` + mData.models.map(m=>`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><span>• ${m.name}</span> <span class="badge" style="background:rgba(255,255,255,0.06);color:var(--text2)">${m.label||'Local'}</span></div>`).join('');
+         } else {
+             document.getElementById('sysOllamaModels').innerHTML = `No local models installed.`;
+         }
+       } catch {}
+    } else {
+       document.getElementById('cardOllama').style.display='none';
+    }
+
+    if(d.diskTotal){
+      const used=d.diskTotal-d.diskFree;
+      document.getElementById('diskUsed').textContent=`Used: ${(used/1073741824).toFixed(1)} GB`;
+      document.getElementById('diskTotal').textContent=`Total: ${(d.diskTotal/1073741824).toFixed(1)} GB`;
+      document.getElementById('diskBar').style.width=((used/d.diskTotal)*100).toFixed(1)+'%';
+    }
+    loadLogs();
+  }catch{showToast('Failed to load system info','error');}
+}
+
+async function loadLogs(){
+  try{
+    const res=await fetch(`${API}/api/logs`);
+    const {logs}=await res.json();
+    const el=document.getElementById('logList');
+    if(!logs.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--text2);font-size:0.8rem">No logs found</div>';return;}
+    el.innerHTML=logs.map(l=>`<div class="log-entry" onclick="viewLog('${l.path.replace(/\\/g,'\\\\')}')"><span class="log-name">${l.name}</span><span class="log-meta">${(l.size/1024).toFixed(1)} KB Â· ${new Date(l.modified).toLocaleDateString()}</span></div>`).join('');
+  }catch{}
+}
+
+async function viewLog(path){
+  const viewer=document.getElementById('logViewer');
+  viewer.style.display='block';viewer.textContent='Loading...';
+  try{const res=await fetch(`${API}/api/logs/read?path=${encodeURIComponent(path)}`);const {content}=await res.json();viewer.textContent=content||'(empty)';}
+  catch{viewer.textContent='Failed to read file.';}
+}
+
+async function toggleOllama(action) {
+  try {
+    await fetch(`${API}/api/ollama/${action}`, {method:'POST'});
+    showToast(`Ollama ${action === 'start' ? 'started' : 'stopped'}`, 'success');
+    setTimeout(loadSystemInfo, 1500);
+  } catch {
+    showToast(`Failed to ${action} Ollama`, 'error');
+  }
+}
+
+// â”€â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function launchAI(mode){
+  try{await fetch(`${API}/api/launch`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode})});showToast(`AI launched in ${mode} mode`,'success');}
+  catch{showToast('Failed to launch','error');}
+}
+async function launchClaudeCode(){
+  try{await fetch(`${API}/api/launch`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'claude'})});showToast('Claude Code launched! 🚀','success');}
+  catch{showToast('Failed to launch Claude Code','error');}
+}
+function exportConfig(){window.open(`${API}/api/config/export`,'_blank');}
+async function importConfig(event){
+  const file=event.target.files[0];if(!file)return;
+  const text=await file.text();
+  try{await fetch(`${API}/api/config/import`,{method:'POST',headers:{'Content-Type':'text/plain'},body:text});showToast('Config imported','success');loadConfig();}
+  catch{showToast('Import failed','error');}
+  event.target.value='';
+}
+
+// â”€â”€â”€ Updates â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function checkUpdates(){
+  document.getElementById('updateCurrent').textContent='...';
+  document.getElementById('updateLatest').textContent='...';
+  document.getElementById('updateStatus').innerHTML='<div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--text2)"><div class="spinner"></div> Checking...</div>';
+  try{
+    const res=await fetch(`${API}/api/updates`);const d=await res.json();
+    document.getElementById('updateCurrent').textContent=d.current;
+    document.getElementById('updateLatest').textContent=d.latest;
+    if(d.updateAvailable){document.getElementById('updateStatus').innerHTML='<span class="badge badge-warning">Update available</span>';document.getElementById('btnUpdate').style.display='';}
+    else{document.getElementById('updateStatus').innerHTML='<span class="badge badge-success">Up to date</span>';document.getElementById('btnUpdate').style.display='none';}
+  }catch{document.getElementById('updateStatus').innerHTML='<span class="badge badge-error">Check failed</span>';}
+}
+
+async function installUpdate(){
+  document.getElementById('btnUpdate').disabled=true;
+  document.getElementById('btnUpdate').innerHTML='<div class="spinner"></div> Updating...';
+  try{
+    const res=await fetch(`${API}/api/updates/install`,{method:'POST'});const d=await res.json();
+    if(d.success){showToast(`Updated to v${d.version}`,'success');checkUpdates();}
+    else showToast('Update failed','error');
+  }catch{showToast('Update failed','error');}
+  document.getElementById('btnUpdate').disabled=false;
+  document.getElementById('btnUpdate').innerHTML='Update Now';
+}
+
+// â”€â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.className=`toast ${type}`;
+  t.innerHTML=(type==='success'?'✓ ':type==='error'?'✗ ':'')+msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+</script>
+</body>
+</html>

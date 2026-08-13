@@ -1,0 +1,12 @@
+# ── Runtime: scaricati/creati al primo avvio ──
+/engine/
+/data/
+/Microsoft/
+
+# ── OS / editor ──
+Thumbs.db
+.DS_Store
+Desktop.ini
+*.swp
+*.swo
+*~
