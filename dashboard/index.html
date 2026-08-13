@@ -410,7 +410,7 @@ let userScrolled = false;
 let currentMode = 'normal';
 let modeLocked = false;
 let agentMode = false;
-let webSearchEnabled = false;
+let webSearchEnabled = true;
 let workDir = '';
 const defaults = { gemini:'gemini-2.0-pro-exp-02-05', anthropic:'claude-3-7-sonnet-20250219', ollama:'llama3.2:3b', openai:'gpt-4o', nvidia:'meta/llama-3.1-70b-instruct', deepseek:'deepseek-chat', lmstudio:'', 'custom-openai':'' };
 const providerNames = { openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Claude', ollama:'Ollama', openai:'OpenAI', nvidia:'NVIDIA NIM', deepseek:'DeepSeek', lmstudio:'LM Studio', 'custom-openai':'Custom OpenAI-Compatible' };
@@ -426,7 +426,8 @@ const providerNames = { openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Cla
   const savedAgent = localStorage.getItem('agentMode');
   if (savedAgent === 'true') { agentMode = true; document.getElementById('agentToggle').checked = true; document.getElementById('workdirBar').style.display = 'flex'; }
   const savedWebSearch = localStorage.getItem('webSearch');
-  if (savedWebSearch === 'true') { webSearchEnabled = true; document.getElementById('webSearchToggle').checked = true; }
+  if (savedWebSearch === 'false') { webSearchEnabled = false; document.getElementById('webSearchToggle').checked = false; }
+  else { webSearchEnabled = true; document.getElementById('webSearchToggle').checked = true; }
   // Restore last active chat on refresh
   const lastChatId = localStorage.getItem('activeChatId');
   if (lastChatId) { try { await openChatById(lastChatId); } catch {} }

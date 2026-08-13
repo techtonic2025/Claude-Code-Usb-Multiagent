@@ -150,6 +150,26 @@ async function streamExternal(url, headers, body, onChunk, onEnd, signal) {
     });
 }
 
+function sseLineBuffer(onLine) {
+    let buffer = '';
+    return (chunk) => {
+        buffer += chunk;
+        let idx;
+        while ((idx = buffer.indexOf('\n')) !== -1) {
+            const line = buffer.slice(0, idx);
+            buffer = buffer.slice(idx + 1);
+            onLine(line);
+        }
+    };
+}
+
+function cleanContent(c) {
+    let s = String(c == null ? '' : c);
+    s = s.replace(/^```[a-zA-Z0-9_-]*[ \t]*\r?\n/, '');
+    s = s.replace(/\r?\n```[ \t]*\r?\n?$/, '');
+    return s;
+}
+
 function sendJSON(res, status, obj) {
     res.writeHead(status, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
     res.end(JSON.stringify(obj));
@@ -331,6 +351,9 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
   let fullText = '';
   let iterations = 0;
   const maxIterations = 15;
+  let madeToolCall = false;
+  let nudges = 0;
+  const maxNudges = 2;
   const conversation = [...allMessages];
 
   while (iterations < maxIterations) {
@@ -343,21 +366,19 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
 
       let chunkText = '';
       await streamExternal(`${baseUrl}/chat/completions`, headers, body,
-        (chunk) => {
-          chunk.split('\n').forEach(line => {
-            if (!line.startsWith('data: ')) return;
-            const raw = line.slice(6).trim();
-            if (raw === '[DONE]') return;
-            try {
-              const parsed = JSON.parse(raw);
-              const delta = parsed.choices?.[0]?.delta;
-              if (delta?.content) {
-                chunkText += delta.content;
-                sendSSE({ type: 'agent_reasoning', iteration, content: delta.content });
-              }
-            } catch {}
-          });
-        },
+        sseLineBuffer((line) => {
+          if (!line.startsWith('data: ')) return;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') return;
+          try {
+            const parsed = JSON.parse(raw);
+            const delta = parsed.choices?.[0]?.delta;
+            if (delta?.content) {
+              chunkText += delta.content;
+              sendSSE({ type: 'agent_reasoning', iteration, content: delta.content });
+            }
+          } catch {}
+        }),
         () => {} // onEnd — handled below
       );
 
@@ -376,7 +397,7 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
             const mlMatch = chunkText.match(/\[TOOL:(\w+)\]\s*\n?\s*path:\s*([^\r\n]+)[\s\S]*?<<<FILE>>>\s*\n([\s\S]*?)<<<END>>>/);
             if (mlMatch) {
               toolName = mlMatch[1];
-              toolArgs = { path: mlMatch[2].trim().replace(/^[\"']|[\"']$/g, ''), content: mlMatch[3].replace(/\n?$/, '') };
+              toolArgs = { path: mlMatch[2].trim().replace(/^[\"']|[\"']$/g, ''), content: cleanContent(mlMatch[3]) };
             }
           }
 
@@ -393,6 +414,7 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
           }
 
           if (toolName) {
+          madeToolCall = true;
           conversation.push({ role: 'assistant', content: chunkText });
           sendSSE({ type: 'tool_call', id: `call_${iterations}`, name: toolName, args: JSON.stringify({ path: toolArgs.path || '???' }).slice(0, 200) });
 
@@ -408,7 +430,16 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
 
           conversation.push({ role: 'user', content: `Tool ${toolName} result:\n${result}\n\nContinue the task. If done, provide the final answer.` });
         } else {
-          // No tool call — agent is done
+          // No tool call in this response
+          if (!madeToolCall && nudges < maxNudges && (agent.tools || []).length > 0) {
+            // Model planned/asked instead of doing the work — nudge it to act now
+            nudges++;
+            sendSSE({ type: 'agent_reasoning', iteration, content: `\n\n⚠️ Risposta senza creazione di file (tentativo ${nudges}/${maxNudges}). Richiamo l'agente per farlo eseguire...\n\n` });
+            conversation.push({ role: 'assistant', content: chunkText });
+            conversation.push({ role: 'user', content: "Non hai ancora creato NESSUN file. Non devi descrivere il piano né chiedere conferma (\"vuoi che...?\"): devi CREARE SUBITO i file necessari usando [TOOL:write_file] con il formato ESATTO. Se servono più file, emetti più comandi [TOOL:write_file] uno dopo l'altro. Esegui direttamente, senza fare domande." });
+            continue;
+          }
+          // Agent is done (already used tools, or no tools available)
           fullText = chunkText;
           sendSSE({ type: 'agent_text', content: fullText });
           break;
@@ -659,17 +690,15 @@ Le istruzioni del capo team hanno PRIORITÀ ASSOLUTA sul piano originale.`;
       let fullText = '';
 
       await streamExternal(`${baseUrl}/chat/completions`, headers, body,
-        (chunk) => {
-          chunk.split('\n').forEach(line => {
-            if (!line.startsWith('data: ')) return;
-            const raw = line.slice(6).trim();
-            if (raw === '[DONE]') return;
-            try {
-              const delta = JSON.parse(raw).choices?.[0]?.delta?.content || '';
-              if (delta) { fullText += delta; sendSSE({ type: 'agent_delta', agentId, content: delta }); }
-            } catch {}
-          });
-        },
+        sseLineBuffer((line) => {
+          if (!line.startsWith('data: ')) return;
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') return;
+          try {
+            const delta = JSON.parse(raw).choices?.[0]?.delta?.content || '';
+            if (delta) { fullText += delta; sendSSE({ type: 'agent_delta', agentId, content: delta }); }
+          } catch {}
+        }),
         () => {},
         controller.signal
       );
@@ -720,7 +749,7 @@ Le istruzioni del capo team hanno PRIORITÀ ASSOLUTA sul piano originale.`;
         while ((toolMatch = toolPattern.exec(details)) !== null) {
           const toolName = toolMatch[1];
           const toolPath = toolMatch[2].trim().replace(/^[\"']|[\"']$/g, '');
-          const toolContent = toolMatch[3];
+          const toolContent = cleanContent(toolMatch[3]);
           if (agentTools.includes(toolName)) {
             sendSSE({ type: 'tool_call', agentId, toolName, args: { path: toolPath } });
             const result = await executeTool(toolName, { path: toolPath, content: toolContent });
@@ -1111,17 +1140,79 @@ function executeToolDirect(name, args, resolvedPath) {
 // ─── Web Search (Wikipedia API — gratis, no API key) ─────────────────────
 async function searchWeb(query) {
     try {
-        // Extract key search terms: keep numbers, proper nouns, and last 3-4 significant words
+        // Extract key search terms: keep numbers, proper nouns, and last significant words
         const keywords = query.replace(/[?.,!;:¿¡]/g, '').split(/\s+/).filter(w => w.length > 2).slice(-8).join(' ');
         const searchQuery = keywords || query;
         console.log(`[searchWeb] Query: "${query}" → keywords: "${searchQuery}"`);
 
-        // Try Italian Wikipedia first (matches user's language), fall back to English
+        // 1. DuckDuckGo — vera ricerca web (gratis, senza chiave)
+        try {
+            const ddg = await searchDuckDuckGo(searchQuery);
+            if (ddg && ddg.length > 0) {
+                console.log(`[searchWeb] DuckDuckGo: ${ddg.length} risultati`);
+                return ddg.map((r, i) => `[${i + 1}] ${r.title}\n${r.text}\nFonte: ${r.url}`).join('\n\n');
+            }
+        } catch (e) { console.log(`[searchWeb] DuckDuckGo non disponibile: ${e.message}`); }
+
+        // 2. Fallback a Wikipedia
+        console.log('[searchWeb] Fallback a Wikipedia');
+        return await searchWikipedia(searchQuery);
+    } catch (e) {
+        console.error('Web search error:', e.message);
+        return null;
+    }
+}
+
+async function searchDuckDuckGo(query) {
+    try {
+        const url = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+        const res = await fetchExternal(url, {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+            'Accept-Language': 'it-IT,it;q=0.9,en;q=0.8'
+        }, null, 'GET');
+        if (!res || !res.data) return null;
+        const html = res.data;
+
+        // Titoli + link (result__a)
+        const titles = [];
+        const tRe = /<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g;
+        let tm;
+        while ((tm = tRe.exec(html)) !== null) {
+            titles.push({ href: tm[1], title: cleanHtml(tm[2]) });
+        }
+
+        // Snippet (result__snippet)
+        const snippets = [];
+        const sRe = /<a[^>]+class="result__snippet"[^>]*>([\s\S]*?)<\/a>/g;
+        let sm;
+        while ((sm = sRe.exec(html)) !== null) {
+            snippets.push(cleanHtml(sm[1]));
+        }
+
+        const results = [];
+        const n = Math.min(titles.length, snippets.length, 5);
+        for (let i = 0; i < n; i++) {
+            const realUrl = decodeDdgUrl(titles[i].href);
+            const title = titles[i].title;
+            const text = snippets[i] || '';
+            if (title && realUrl && /^https?:\/\//.test(realUrl)) {
+                results.push({ title, text, url: realUrl });
+            }
+        }
+        return results.length > 0 ? results : null;
+    } catch (e) {
+        console.error('[searchDuckDuckGo]', e.message);
+        return null;
+    }
+}
+
+async function searchWikipedia(query) {
+    try {
         let pages = [];
         let wikiLang = 'it';
         for (const lang of ['it', 'en']) {
             const wikiBase = `https://${lang}.wikipedia.org/w/api.php`;
-            const searchUrl = `${wikiBase}?action=query&list=search&srsearch=${encodeURIComponent(searchQuery)}&format=json&srlimit=5`;
+            const searchUrl = `${wikiBase}?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=5`;
             try {
                 const searchRes = await fetchExternal(searchUrl, { 'User-Agent': 'Dashboard/1.0' }, null, 'GET');
                 const searchData = JSON.parse(searchRes.data);
@@ -1130,11 +1221,8 @@ async function searchWeb(query) {
             } catch (e) { continue; }
         }
 
-        console.log(`[searchWeb] Found ${pages.length} pages on ${wikiLang}.wiki: ${pages.map(p=>p.title).join(', ')}`);
-
         if (pages.length === 0) return null;
 
-        // Fetch extracts from the SAME wiki that returned results
         const pageIds = pages.map(p => p.pageid).join('|');
         const wikiBase = `https://${wikiLang}.wikipedia.org/w/api.php`;
         const extractUrl = `${wikiBase}?action=query&pageids=${pageIds}&prop=extracts&exintro=1&explaintext=1&format=json`;
@@ -1142,34 +1230,44 @@ async function searchWeb(query) {
         try {
             const extractRes = await fetchExternal(extractUrl, { 'User-Agent': 'Dashboard/1.0' }, null, 'GET');
             extractData = JSON.parse(extractRes.data);
-            console.log(`[searchWeb] Extracts fetched OK`);
-        } catch (e) { console.log(`[searchWeb] Extract fetch failed: ${e.message}`); }
+        } catch (e) { console.log(`[searchWikipedia] Extract fetch failed: ${e.message}`); }
 
         const pageData = (extractData.query && extractData.query.pages) || {};
-
-        // Build context from results
         const results = [];
         for (const page of pages) {
             const extract = (pageData[page.pageid] && pageData[page.pageid].extract) || page.snippet || '';
             const cleanExtract = extract.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
             if (cleanExtract.length > 30) {
                 const url = `https://${wikiLang}.wikipedia.org/wiki/${encodeURIComponent((page.title || '').replace(/ /g, '_'))}`;
-                results.push({
-                    title: page.title || '',
-                    url,
-                    text: cleanExtract.slice(0, 800)
-                });
+                results.push({ title: page.title || '', url, text: cleanExtract.slice(0, 800) });
             }
         }
-
         if (results.length === 0) return null;
-
-        return results.map((r, i) =>
-            `[${i + 1}] ${r.title}\n${r.text}\nFonte: ${r.url}`
-        ).join('\n\n');
+        return results.map((r, i) => `[${i + 1}] ${r.title}\n${r.text}\nFonte: ${r.url}`).join('\n\n');
     } catch (e) {
-        console.error('Web search error:', e.message);
+        console.error('Wikipedia search error:', e.message);
         return null;
+    }
+}
+
+function cleanHtml(s) {
+    return String(s == null ? '' : s)
+        .replace(/<[^>]+>/g, '')
+        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&#x27;|&#39;|&apos;/g, "'")
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ').trim();
+}
+
+function decodeDdgUrl(uddg) {
+    try {
+        const u = new URL(uddg, 'https://duckduckgo.com');
+        const param = u.searchParams.get('uddg');
+        if (param) return decodeURIComponent(param);
+        if (u.hostname && u.hostname !== 'duckduckgo.com') return u.href;
+        return uddg;
+    } catch {
+        return uddg;
     }
 }
 
@@ -1190,17 +1288,15 @@ async function streamChatResponse(messages, cfg, res) {
         const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` };
         let fullText = '';
         await streamExternal(`${baseUrl}/chat/completions`, headers, body,
-            (chunk) => {
-                chunk.split('\n').forEach(line => {
-                    if (!line.startsWith('data: ')) return;
-                    const raw = line.slice(6).trim();
-                    if (raw === '[DONE]') return;
-                    try {
-                        const delta = JSON.parse(raw).choices?.[0]?.delta?.content || '';
-                        if (delta) { fullText += delta; sendSSE({ type: 'delta', content: delta }); }
-                    } catch {}
-                });
-            },
+            sseLineBuffer((line) => {
+                if (!line.startsWith('data: ')) return;
+                const raw = line.slice(6).trim();
+                if (raw === '[DONE]') return;
+                try {
+                    const delta = JSON.parse(raw).choices?.[0]?.delta?.content || '';
+                    if (delta) { fullText += delta; sendSSE({ type: 'delta', content: delta }); }
+                } catch {}
+            }),
             () => { sendSSE({ type: 'done', fullText }); res.end(); }
         );
         return fullText;
