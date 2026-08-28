@@ -62,6 +62,8 @@ Al primo avvio il launcher scarica automaticamente Node.js portatile e Claude Co
 
 Dopo l'avvio, apri **http://localhost:3000** (oppure usa `tools/Open_Dashboard.bat`).
 
+![Dashboard](assets/dashboard.png)
+
 | Tab | Cosa fa |
 |---|---|
 | **💬 Chat** | Conversazione con un singolo modello, con ricerca web in tempo reale e scelta del modello. |
