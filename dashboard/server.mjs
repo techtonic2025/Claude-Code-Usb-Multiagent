@@ -2,7 +2,7 @@ import { createServer } from 'http';
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync, unlinkSync, renameSync } from 'fs';
 import { join, dirname, isAbsolute, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { execSync, exec, spawn, execFileSync } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { createHash } from 'crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,6 +20,21 @@ const interventions = {}; // { sessionId: { messages: [], resolved: false } }
 const pendingPermissions = new Map(); // permissionId → { resolve, reject, timeout }
 let activeSSE = null; // { sendSSE } — set by runAgent/runAgentChat for use by executeTool
 const authorizedPaths = new Set(); // paths/directories user has authorized (with remember=true)
+
+// ─── Uncensored model discovery (OpenRouter open-weights) ─────────
+// Keyword families for "uncensored/abliterated" models: Dolphin, abliterated,
+// Mytho*, Nemo-Uncensored, Magnum, Chablis, Unslop, Toppy, Undial.
+const UNCENSORED_KEYWORD = /uncensor|abliterat|dolphin|mythomax|nemo-uncensored|magnum|chablis|unslop|undial|toppy/i;
+// Curated fallback list (shown if the live API is unreachable or returns nothing)
+// Verified against the live OpenRouter catalog (2026-08-28) — these IDs currently exist.
+const UNCENSORED_CURATED = [
+  'thedrummer/cydonia-24b-v4.1',
+  'cognitivecomputations/dolphin-mistral-24b-venice-edition',
+  'thedrummer/unslopnemo-12b',
+  'anthracite-org/magnum-v4-72b',
+  'undi95/remm-slerp-l2-13b',
+  'gryphe/mythomax-l2-13b'
+];
 
 // Ensure data directories
 [AGENTS_DIR, TEAMS_DIR, WORKFLOWS_DIR].forEach(d => { if (!existsSync(d)) mkdirSync(d, { recursive: true }); });
@@ -150,6 +165,22 @@ async function streamExternal(url, headers, body, onChunk, onEnd, signal) {
     });
 }
 
+// Promisified async exec — does NOT block the event loop (unlike execSync)
+function execAsync(cmd, opts = {}) {
+    return new Promise((resolve, reject) => {
+        exec(cmd, { maxBuffer: 10 * 1024 * 1024, ...opts }, (err, stdout) => {
+            if (err) reject(err); else resolve(stdout);
+        });
+    });
+}
+
+// AbortSignal tied to the HTTP response closing (client navigated away / pressed STOP)
+function closeSignal(res) {
+    const controller = new AbortController();
+    res.on('close', () => controller.abort());
+    return controller.signal;
+}
+
 function sseLineBuffer(onLine) {
     let buffer = '';
     return (chunk) => {
@@ -168,6 +199,19 @@ function cleanContent(c) {
     s = s.replace(/^```[a-zA-Z0-9_-]*[ \t]*\r?\n/, '');
     s = s.replace(/\r?\n```[ \t]*\r?\n?$/, '');
     return s;
+}
+
+// Detect whether the user's message is an explicit request to BUILD/CREATE/MODIFY
+// something, as opposed to a greeting, a question, or casual chat. Only explicit
+// build requests should trigger the multi-agent pipeline and file creation; a
+// "Ciao" or a question must be answered conversationally, never by making files.
+function isBuildRequest(text) {
+    if (!text || typeof text !== 'string') return false;
+    const t = text.toLowerCase();
+    const verbs = /\b(crea|creami|creare|creazione|scrivi|scrivimi|scrivere|sviluppa|implementa|genera|generami|progetta|realizza|costruisci|disegna|disegnami|aggiungi|modifica|correggi|fixa|fix|ottimizza|migliora|rifattorizza|configura|installa|deploy|aggiorna|converti|trasforma|traduci|build|create|write|develop|implement|generate|design|add|modify|refactor)\b/;
+    const objects = /\b(sito|siti|pagina|pagina web|landing|webapp|web app|app|applicazione|script|programma|componente|feature|funzionalità|dashboard|readme|documentazione|codice|bug|test|refactor|progetto|database|api|endpoint|modulo|interfaccia|frontend|backend|html|css|javascript|python|node|react|json|website|page|application)\b/;
+    const imperatives = /\b(fammi|fai un|fai una|fai il|fai la|fammi un|fammi una|fammi il|make me|make a)\b/;
+    return verbs.test(t) || objects.test(t) || imperatives.test(t);
 }
 
 function sendJSON(res, status, obj) {
@@ -291,8 +335,8 @@ Per list_directory: [TOOL:list_directory] path: cartella
 Dopo il tool, riceverai il risultato e potrai continuare.` : '';
 
   const systemPrompt = agent.backstory
-    ? `## ${agent.name} — ${agent.role}\n\n**Goal:** ${agent.goal}\n\n**Background:** ${agent.backstory}\n\n**Available Tools:** ${toolList}${toolInstructions}\n\nPer ogni task:\n1. Analizza la richiesta\n2. Usa SUBITO i tool disponibili per creare/scrivere i file necessari\n3. NON limitarti a descrivere il codice — DEVI creare i file con write_file\n4. Alla fine, spiega in modo semplice cosa hai fatto`
-    : `Sei un ${agent.name}. ${agent.goal}. Usa i tool disponibili per completare il task.${toolInstructions}`;
+    ? `## ${agent.name} — ${agent.role}\n\n**Goal:** ${agent.goal}\n\n**Background:** ${agent.backstory}\n\n**Available Tools:** ${toolList}${toolInstructions}\n\nRispondi in modo naturale e conversazionale. Usa i tool SOLO se la richiesta richiede esplicitamente di creare/modificare file o eseguire comandi. Se l'utente ti saluta, ti ringrazia o fa una domanda, rispondi normalmente SENZA creare file.\n\nSe invece ti chiede esplicitamente di creare/realizzare qualcosa:\n1. Analizza la richiesta\n2. Usa SUBITO i tool disponibili per creare/scrivere i file necessari\n3. NON limitarti a descrivere il codice — DEVI creare i file con write_file\n4. Alla fine, spiega in modo semplice cosa hai fatto`
+    : `Sei un ${agent.name}. ${agent.goal}. Rispondi in modo naturale. Usa i tool disponibili SOLO se la richiesta lo richiede esplicitamente. Se l'utente saluta o fa una domanda, rispondi normalmente senza creare file.${toolInstructions}`;
 
   // Set up SSE FIRST so permission dialogs can work during path pre-fetch
   res.writeHead(200, {
@@ -301,6 +345,7 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
   });
   const sendSSE = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`);
   activeSSE = { sendSSE };
+  const closed = closeSignal(res);
 
   // Detect external paths in the user's task and pre-execute the tool
   let enhancedTask = task;
@@ -357,6 +402,7 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
   const conversation = [...allMessages];
 
   while (iterations < maxIterations) {
+    if (closed.aborted) break;
     iterations++;
     sendSSE({ type: 'agent_thinking', iteration: iterations, agent: agent.name });
 
@@ -375,11 +421,12 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
             const delta = parsed.choices?.[0]?.delta;
             if (delta?.content) {
               chunkText += delta.content;
-              sendSSE({ type: 'agent_reasoning', iteration, content: delta.content });
+              sendSSE({ type: 'agent_reasoning', iteration: iterations, content: delta.content });
             }
           } catch {}
         }),
-        () => {} // onEnd — handled below
+        () => {}, // onEnd — handled below
+        closed
       );
 
         if (chunkText.trim()) {
@@ -431,10 +478,10 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
           conversation.push({ role: 'user', content: `Tool ${toolName} result:\n${result}\n\nContinue the task. If done, provide the final answer.` });
         } else {
           // No tool call in this response
-          if (!madeToolCall && nudges < maxNudges && (agent.tools || []).length > 0) {
+          if (!madeToolCall && nudges < maxNudges && (agent.tools || []).length > 0 && isBuildRequest(task)) {
             // Model planned/asked instead of doing the work — nudge it to act now
             nudges++;
-            sendSSE({ type: 'agent_reasoning', iteration, content: `\n\n⚠️ Risposta senza creazione di file (tentativo ${nudges}/${maxNudges}). Richiamo l'agente per farlo eseguire...\n\n` });
+            sendSSE({ type: 'agent_reasoning', iteration: iterations, content: `\n\n⚠️ Risposta senza creazione di file (tentativo ${nudges}/${maxNudges}). Richiamo l'agente per farlo eseguire...\n\n` });
             conversation.push({ role: 'assistant', content: chunkText });
             conversation.push({ role: 'user', content: "Non hai ancora creato NESSUN file. Non devi descrivere il piano né chiedere conferma (\"vuoi che...?\"): devi CREARE SUBITO i file necessari usando [TOOL:write_file] con il formato ESATTO. Se servono più file, emetti più comandi [TOOL:write_file] uno dopo l'altro. Esegui direttamente, senza fare domande." });
             continue;
@@ -474,6 +521,7 @@ async function runTeam(teamName, task, messages, res, cfg) {
     'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*',
   });
   const sendSSE = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`);
+  const closed = closeSignal(res);
 
   if (!team) {
     // If team not found, create an ad-hoc team with PM + Dev + Reviewer
@@ -506,6 +554,7 @@ async function runTeam(teamName, task, messages, res, cfg) {
     // Phase 2: Developer executes each subtask
     let results = [];
     for (let i = 0; i < subtasks.length; i++) {
+      if (closed.aborted) break;
       const st = subtasks[i];
       sendSSE({ type: 'orchestrator', action: 'phase', phase: `💻 Developer esegue task ${i+1}/${subtasks.length}: ${st}`, agent: 'developer' });
 
@@ -575,6 +624,7 @@ async function runAgentChat(task, res, cfg, selectedAgents) {
   });
   const sendSSE = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`);
   activeSSE = { sendSSE };
+  const closed = closeSignal(res);
 
   // Send sessionId so client can post interventions
   sendSSE({ type: 'session', sessionId });
@@ -681,6 +731,9 @@ Le istruzioni del capo team hanno PRIORITÀ ASSOLUTA sul piano originale.`;
     // Set up interrupt controller — shared with /intervene endpoint
     const controller = new AbortController();
     if (intrState) intrState.controller = controller;
+    // Also abort this agent's request if the client disconnects (closed tab / STOP)
+    if (closed && closed.aborted) controller.abort();
+    else if (closed) closed.addEventListener('abort', () => controller.abort());
 
     sendSSE({ type: 'agent_start', agent: { id: agentId, name: agentDef.name, icon: agentDef.icon || '🤖', role: agentDef.role || roleLabel } });
 
@@ -806,6 +859,27 @@ Le istruzioni del capo team hanno PRIORITÀ ASSOLUTA sul piano originale.`;
 
   let subtasks = [task];
 
+  // ── Conversational gate ──
+  // Greetings, questions and casual chat are answered by the Team Manager directly,
+  // with NO decomposition and NO file creation. The build pipeline (PM → agents →
+  // review) runs only for explicit build/create/modify requests.
+  if (!isBuildRequest(task)) {
+    const pmAgent = allAgents['project-manager'] || BUILTIN_AGENTS['project-manager'];
+    sendSSE({ type: 'phase', label: '👋 Team Manager', detail: 'Risponde...' });
+    const chatPrompt = `L'utente ti ha scritto questo messaggio in chat:\n\n"${task}"\n\nRispondi come Team Manager, in prima persona, in italiano, in modo breve e colloquiale (max 2-3 frasi). Questo è un messaggio di conversazione (saluto, domanda o chiacchiera), NON un task di sviluppo: NON creare file, NON scrivere codice, NON scomporre in sotto-task. Se è un saluto, rispondi al saluto e chiedi cosa vuole fare (es. "Ciao! Cosa vuoi fare?"). Se è una domanda, rispondi direttamente.`;
+    let reply = await askAgent('project-manager', pmAgent, chatPrompt, 'PM', interruptState);
+    if (reply && typeof reply === 'object') reply = reply.partialText || '';
+    let replyText = (reply || '').trim();
+    const sep = replyText.search(/\n?---/);
+    if (sep !== -1) replyText = replyText.slice(0, sep).trim();
+    if (!replyText) replyText = 'Ciao! Cosa vuoi fare?';
+    delete interventions[sessionId];
+    sendSSE({ type: 'done', subtasks: [], createdFiles: [] });
+    res.end();
+    activeSSE = null;
+    return replyText;
+  }
+
   // ── Phase 1: PM decomposes (if selected) ──
   if (hasPM) {
     const pmAgent = allAgents['project-manager'] || BUILTIN_AGENTS['project-manager'];
@@ -849,6 +923,7 @@ Le istruzioni del capo team hanno PRIORITÀ ASSOLUTA sul piano originale.`;
 
   let allResults = [];
   for (let i = 0; i < subtasks.length; i++) {
+    if (closed.aborted) break;
     const st = subtasks[i];
     // Round-robin through execution agents
     const execAgent = execAgents[i % execAgents.length] || execAgents[0];
@@ -1078,7 +1153,7 @@ async function executeTool(name, args) {
 }
 
 // Direct tool execution WITHOUT permission check (for pre-fetch where user already authorized)
-function executeToolDirect(name, args, resolvedPath) {
+async function executeToolDirect(name, args, resolvedPath) {
   resolvedPath = resolvedPath || resolveToolPath(name, args);
 
   // ── Execute ──
@@ -1116,7 +1191,7 @@ function executeToolDirect(name, args, resolvedPath) {
           }
         }
         const targetDir = (resolvedPath && existsSync(resolvedPath)) ? resolvedPath : WORK_DIR;
-        const result = execSync(cmd, { cwd: targetDir, encoding: 'utf-8', timeout: 30000, shell: true });
+        const result = await execAsync(cmd, { cwd: targetDir, timeout: 30000, shell: true });
         return result.slice(0, 5000);
       } catch(e) {
         return `Errore: ${e.message}`;
@@ -1128,7 +1203,10 @@ function executeToolDirect(name, args, resolvedPath) {
         const targetDir = (resolvedPath && existsSync(resolvedPath)) ? resolvedPath : WORK_DIR;
         // Sanitize pattern: escape double quotes and backslashes to prevent shell injection
         const safePattern = pattern.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`');
-        const result = execSync(`npx --no-install rg --no-heading -n "${safePattern}" "${targetDir}" --max-count 20`, { encoding: 'utf-8', timeout: 15000, cwd: targetDir });
+        // Exclude heavy runtime dirs so the scan does NOT crawl data/ (browser cache, 13k+ files)
+        // or engine/node_modules on a slow USB drive — this was blocking the whole event loop.
+        const excludes = " --glob '!data/**' --glob '!engine/**' --glob '!node_modules/**' --glob '!Microsoft/**' --glob '!.git/**'";
+        const result = await execAsync(`npx --no-install rg --no-heading -n --max-count 20${excludes} "${safePattern}" "${targetDir}"`, { timeout: 15000, cwd: targetDir });
         return result.slice(0, 5000) || 'Nessun risultato trovato.';
       } catch { return 'Nessun risultato trovato.'; }
     }
@@ -1282,6 +1360,7 @@ async function streamChatResponse(messages, cfg, res) {
         'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*',
     });
     const sendSSE = (data) => res.write(`data: ${JSON.stringify(data)}\n\n`);
+    const closed = closeSignal(res);
 
     if (provider === 'openai' || provider === 'anthropic') {
         const body = JSON.stringify({ model, messages, stream: true });
@@ -1297,7 +1376,8 @@ async function streamChatResponse(messages, cfg, res) {
                     if (delta) { fullText += delta; sendSSE({ type: 'delta', content: delta }); }
                 } catch {}
             }),
-            () => { sendSSE({ type: 'done', fullText }); res.end(); }
+            () => { if (!closed.aborted) { sendSSE({ type: 'done', fullText }); res.end(); } },
+            closed
         );
         return fullText;
     }
@@ -1353,6 +1433,7 @@ const server = createServer(async (req, res) => {
                 else if (provider === 'gemini') { verifyUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`; }
                 else if (provider === 'nvidia') { verifyUrl = 'https://integrate.api.nvidia.com/v1/models'; headers = { 'Authorization': `Bearer ${key}` }; }
                 else if (provider === 'openrouter') { verifyUrl = 'https://openrouter.ai/api/v1/models'; headers = { 'Authorization': `Bearer ${key}` }; }
+                else if (provider === 'uncensored') { verifyUrl = 'https://openrouter.ai/api/v1/models'; headers = (key && key !== 'not-needed') ? { 'Authorization': `Bearer ${key}` } : {}; }
                 else if (provider === 'ollama') {
                     verifyUrl = `${cleanBase || 'http://localhost:11434'}/api/tags`;
                     const resp = await fetch(verifyUrl);
@@ -1435,14 +1516,14 @@ const server = createServer(async (req, res) => {
             } catch (e) { return sendJSON(res, 200, { models: [] }); }
         }
         if (url.pathname === '/api/models' && req.method === 'GET') {
+            const q = new URL(`http://localhost${req.url}`);
+            const type = q.searchParams.get('type') || 'free';
             try {
-                const q = new URL(`http://localhost${req.url}`);
-                const type = q.searchParams.get('type') || 'free';
                 const apiKey = q.searchParams.get('key') || '';
                 // Always use OpenRouter API for model discovery (not the saved config)
                 const baseUrl = 'https://openrouter.ai/api/v1';
                 const key = apiKey || readConfig().OPENAI_API_KEY || readConfig().ANTHROPIC_AUTH_TOKEN || '';
-                const headers = key ? { 'Authorization': `Bearer ${key}` } : {};
+                const headers = key && key !== 'not-needed' ? { 'Authorization': `Bearer ${key}` } : {};
                 const resp = await fetch(`${baseUrl}/models`, { headers });
                 const data = await resp.json().catch(() => ({}));
                 let models = (data.data || []).map(m => m.id);
@@ -1457,9 +1538,18 @@ const server = createServer(async (req, res) => {
                         const price = m.pricing ? (parseFloat(m.pricing.prompt || '0') + parseFloat(m.pricing.completion || '0')) : 0;
                         return price > 0;
                     }).map(m => m.id);
+                } else if (type === 'uncensored') {
+                    // Only uncensored/abliterated open models (Dolphin, abliterated, etc.)
+                    const live = (data.data || []).filter(m => {
+                        const hay = `${m.id || ''} ${m.name || ''} ${m.description || ''}`.toLowerCase();
+                        return UNCENSORED_KEYWORD.test(hay);
+                    }).map(m => m.id);
+                    models = [...new Set([...live, ...UNCENSORED_CURATED])];
                 }
                 return sendJSON(res, 200, { models });
-            } catch (e) { return sendJSON(res, 200, { models: [] }); }
+            } catch (e) {
+                return sendJSON(res, 200, { models: type === 'uncensored' ? UNCENSORED_CURATED : [] });
+            }
         }
 
         if (url.pathname === '/api/chats' && req.method === 'GET') return sendJSON(res, 200, { chats: listChats() });

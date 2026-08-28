@@ -235,6 +235,7 @@
           <div class="card">
             <h2>Select AI Provider</h2><p class="subtitle">Choose where your AI requests will be routed</p>
             <div class="provider-grid">
+              <div class="provider-option" data-provider="uncensored" onclick="selectProvider(this)"><div class="icon">🔓</div><div class="name">Uncensored</div><div class="desc">No censorship</div></div>
               <div class="provider-option" data-provider="openrouter" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="name">OpenRouter</div><div class="desc">200+ models</div></div>
               <div class="provider-option" data-provider="nvidia" onclick="selectProvider(this)"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div class="name">NVIDIA NIM</div><div class="desc">Free GPU AI</div></div>
               <div class="provider-option" data-provider="deepseek" onclick="selectProvider(this)"><div class="icon">DS</div><div class="name">DeepSeek</div><div class="desc">Coding API</div></div>
@@ -267,7 +268,7 @@
         <div class="section" id="sec3">
           <div class="card">
             <h2>Choose Model</h2><p class="subtitle">Select the AI model you want to use</p>
-            <div id="tierToggle" style="display:none"><div class="tier-toggle"><div class="tier-btn active" data-tier="free" onclick="switchTier('free',this)">Free</div><div class="tier-btn" data-tier="paid" onclick="switchTier('paid',this)">Paid</div></div></div>
+            <div id="tierToggle" style="display:none"><div class="tier-toggle"><div class="tier-btn active" data-tier="free" onclick="switchTier('free',this)">Free</div><div class="tier-btn" data-tier="paid" onclick="switchTier('paid',this)">Paid</div><div class="tier-btn" data-tier="uncensored" onclick="switchTier('uncensored',this)">🔓 Uncensored</div></div></div>
             <div id="modelSearchWrap" style="display:none">
               <input type="text" id="modelSearch" class="model-search" placeholder="Search models..." oninput="filterModels()">
               <div class="model-list" id="modelList"></div>
@@ -413,7 +414,7 @@ let agentMode = false;
 let webSearchEnabled = true;
 let workDir = '';
 const defaults = { gemini:'gemini-2.0-pro-exp-02-05', anthropic:'claude-3-7-sonnet-20250219', ollama:'llama3.2:3b', openai:'gpt-4o', nvidia:'meta/llama-3.1-70b-instruct', deepseek:'deepseek-chat', lmstudio:'', 'custom-openai':'' };
-const providerNames = { openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Claude', ollama:'Ollama', openai:'OpenAI', nvidia:'NVIDIA NIM', deepseek:'DeepSeek', lmstudio:'LM Studio', 'custom-openai':'Custom OpenAI-Compatible' };
+const providerNames = { uncensored:'Uncensored', openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Claude', ollama:'Ollama', openai:'OpenAI', nvidia:'NVIDIA NIM', deepseek:'DeepSeek', lmstudio:'LM Studio', 'custom-openai':'Custom OpenAI-Compatible' };
 
 // â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (async function init() {
@@ -1624,7 +1625,7 @@ async function loadChatList() {
           <div class="chat-item-title">${c.type === 'agent-chat' ? '<span class="badge" style="background:var(--accent);color:#fff;font-size:0.58rem;padding:1px 5px;border-radius:4px;margin-right:4px">TEAM</span>' : ''}${escHtml(c.title)}</div>
           <div class="chat-item-meta">${c.messageCount} msgs · ${relativeTime(c.updated)}</div>
         </div>
-        <button class="chat-item-del" onclick="confirmDeleteChat(event,'${c.id}','${escHtml(c.title).replace(/'/g,"\\'")}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="chat-item-del" data-id="${c.id}" data-title="${escHtml(c.title)}" onclick="confirmDeleteChat(event, this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     `).join('');
   } catch {}
@@ -1690,9 +1691,10 @@ async function openChatById(id) {
 
 let _pendingDeleteId = null;
 
-function confirmDeleteChat(e, id, title) {
+function confirmDeleteChat(e, btn) {
   e.stopPropagation();
-  _pendingDeleteId = id;
+  _pendingDeleteId = btn.dataset.id;
+  const title = btn.dataset.title || 'conversazione';
   document.getElementById('modalBody').textContent = `"${title}" will be permanently deleted and cannot be recovered.`;
   document.getElementById('confirmModal').style.display = 'flex';
 }
@@ -2291,6 +2293,7 @@ function selectProvider(el) {
   setupState.provider = el.dataset.provider;
   setupState.key = '';
   setupState.model = '';
+  setupState.tier = setupState.provider === 'uncensored' ? 'uncensored' : 'free';
   setupState.baseUrl = setupState.provider === 'lmstudio' ? 'http://localhost:1234/v1' : (setupState.provider === 'omniroute' ? 'http://localhost:20128/v1' : '');
   document.getElementById('btnNext1').disabled = false;
 
@@ -2317,6 +2320,7 @@ function prepareKeyStep(){
   const p=setupState.provider;
   const isLM=p==='lmstudio';
   const isOmni=p==='omniroute';
+  const isUncensored=p==='uncensored';
   const isCustom=p==='custom-openai';
   const isLocal=isLM||isCustom||isOmni;
   const title=document.getElementById('keyStepTitle');
@@ -2331,8 +2335,8 @@ function prepareKeyStep(){
   apiKey.parentElement.style.display=isLM?'none':'';
   apiKey.placeholder=(isOmni||isCustom)?'Optional for local providers':'sk-...';
   baseUrl.value=isLM?'http://localhost:1234/v1':(isOmni?'http://localhost:20128/v1':(setupState.baseUrl||''));
-  title.textContent=isLM?'Connect LM Studio':isOmni?'Connect OmniRoute Gateway':isCustom?'Connect Custom API':'Enter API Key';
-  sub.textContent=isLM?'LM Studio must be running before verification':isOmni?'OmniRoute runs locally at localhost:20128 - API key is optional':isCustom?'Enter your OpenAI-compatible endpoint details':'Paste your provider API key below';
+  title.textContent=isLM?'Connect LM Studio':isOmni?'Connect OmniRoute Gateway':isCustom?'Connect Custom API':isUncensored?'OpenRouter — Modelli Uncensored':'Enter API Key';
+  sub.textContent=isLM?'LM Studio must be running before verification':isOmni?'OmniRoute runs locally at localhost:20128 - API key is optional':isCustom?'Enter your OpenAI-compatible endpoint details':isUncensored?'Free OpenRouter API key (opzionale per i modelli :free). Mostra solo modelli uncensored/abliterated.':'Paste your provider API key below';
   guide.innerHTML=isLM
     ? 'In LM Studio, load a model, open <strong>Developer &gt; Local Server</strong>, then start the server. The default OpenAI-compatible base URL is <strong>http://localhost:1234/v1</strong>.'
     : isOmni
@@ -2358,8 +2362,9 @@ async function verifyKey() {
   const isLM=setupState.provider==='lmstudio';
   const isOmni=setupState.provider==='omniroute';
   const isCustom=setupState.provider==='custom-openai';
+  const isUncensored=setupState.provider==='uncensored';
   const isLocal=isLM||isOmni||isCustom;
-  const key=isLM?'lm-studio':(isOmni?'not-needed':(document.getElementById('apiKey').value.trim()||(isCustom?'not-needed':'')));
+  const key=isLM?'lm-studio':(isOmni?'not-needed':(isUncensored?(document.getElementById('apiKey').value.trim()||'not-needed'):(document.getElementById('apiKey').value.trim()||(isCustom?'not-needed':''))));
   const baseUrl=(document.getElementById('baseUrl')?.value||'').trim().replace(/\/+$/,'');
   if(isLocal&&!baseUrl){showKeyStatus('Base URL cannot be empty','error');return;}
   if(!key){showKeyStatus('API key cannot be empty','error');return;}
@@ -2387,7 +2392,8 @@ function showKeyStatus(html,type){
 }
 
 async function initModelStep(){
-  const isOR=setupState.provider==='openrouter';
+  const isUncensored=setupState.provider==='uncensored';
+  const isOR=setupState.provider==='openrouter'||isUncensored;
   const isOllama=setupState.provider==='ollama';
   const isNvidia=setupState.provider==='nvidia';
   const isDeepSeek=setupState.provider==='deepseek';
@@ -2396,6 +2402,10 @@ async function initModelStep(){
   document.getElementById('modelSearchWrap').style.display=(isOR||isOllama||isNvidia||isDeepSeek||isOpenAICompat)?'':'none';
   document.getElementById('modelSearch').style.display=isOllama?'none':'';
   document.getElementById('manualModelWrap').style.display=''; // Always show custom input
+  if(isUncensored){
+    setupState.tier='uncensored';
+    document.querySelectorAll('.tier-btn').forEach(b=>b.classList.toggle('active',b.dataset.tier==='uncensored'));
+  }
   if(isOR) fetchModels(setupState.tier);
   else if(isOllama) await fetchOllamaModels();
   else if(isNvidia) await fetchNvidiaModels();
@@ -2525,7 +2535,7 @@ async function saveConfig(){
   document.getElementById('btnSave').disabled=true;
   document.getElementById('btnSave').innerHTML='<div class="spinner"></div> Saving...';
   let config={};
-  if(setupState.provider==='openrouter')config={
+  if(setupState.provider==='openrouter'||setupState.provider==='uncensored')config={
     AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',
     OPENAI_API_KEY:setupState.key,
     OPENAI_BASE_URL:'https://openrouter.ai/api/v1',

@@ -2,6 +2,10 @@
 /engine/
 /data/
 /Microsoft/
+/projects/
+
+# ── Segreti / config locale (contiene API key) ──
+.claude/settings.local.json
 
 # ── OS / editor ──
 Thumbs.db
