@@ -416,6 +416,14 @@ let workDir = '';
 const defaults = { gemini:'gemini-2.0-pro-exp-02-05', anthropic:'claude-3-7-sonnet-20250219', ollama:'llama3.2:3b', openai:'gpt-4o', nvidia:'meta/llama-3.1-70b-instruct', deepseek:'deepseek-chat', lmstudio:'', 'custom-openai':'' };
 const providerNames = { uncensored:'Uncensored', openrouter:'OpenRouter', gemini:'Gemini', anthropic:'Claude', ollama:'Ollama', openai:'OpenAI', nvidia:'NVIDIA NIM', deepseek:'DeepSeek', lmstudio:'LM Studio', 'custom-openai':'Custom OpenAI-Compatible' };
 
+// Persist the API key across refreshes and provider switches (client-side only)
+const API_KEY_STORAGE = 'savedApiKey';
+function getSavedApiKey() { try { return localStorage.getItem(API_KEY_STORAGE) || ''; } catch { return ''; } }
+function setSavedApiKey(k) { try { if (k && k !== 'not-needed' && k !== 'lm-studio' && k !== 'ollama') localStorage.setItem(API_KEY_STORAGE, k); } catch {} }
+const MODEL_STORAGE = 'savedModel';
+function getSavedModel() { try { return localStorage.getItem(MODEL_STORAGE) || ''; } catch { return ''; } }
+function setSavedModel(m) { try { if (m) localStorage.setItem(MODEL_STORAGE, m); } catch {} }
+
 // â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (async function init() {
   const saved = localStorage.getItem('theme');
@@ -2291,8 +2299,9 @@ function selectProvider(el) {
   document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('active'));
   el.classList.add('active');
   setupState.provider = el.dataset.provider;
-  setupState.key = '';
-  setupState.model = '';
+  const keyless = setupState.provider === 'lmstudio' || setupState.provider === 'ollama';
+  setupState.key = keyless ? '' : getSavedApiKey();
+  setupState.model = cfg.AI_DISPLAY_MODEL || cfg.OPENAI_MODEL || getSavedModel();
   setupState.tier = setupState.provider === 'uncensored' ? 'uncensored' : 'free';
   setupState.baseUrl = setupState.provider === 'lmstudio' ? 'http://localhost:1234/v1' : (setupState.provider === 'omniroute' ? 'http://localhost:20128/v1' : '');
   document.getElementById('btnNext1').disabled = false;
@@ -2334,6 +2343,7 @@ function prepareKeyStep(){
   guide.style.display=isLocal?'':'none';
   apiKey.parentElement.style.display=isLM?'none':'';
   apiKey.placeholder=(isOmni||isCustom)?'Optional for local providers':'sk-...';
+  apiKey.value=setupState.key||'';
   baseUrl.value=isLM?'http://localhost:1234/v1':(isOmni?'http://localhost:20128/v1':(setupState.baseUrl||''));
   title.textContent=isLM?'Connect LM Studio':isOmni?'Connect OmniRoute Gateway':isCustom?'Connect Custom API':isUncensored?'OpenRouter — Modelli Uncensored':'Enter API Key';
   sub.textContent=isLM?'LM Studio must be running before verification':isOmni?'OmniRoute runs locally at localhost:20128 - API key is optional':isCustom?'Enter your OpenAI-compatible endpoint details':isUncensored?'Free OpenRouter API key (opzionale per i modelli :free). Mostra solo modelli uncensored/abliterated.':'Paste your provider API key below';
@@ -2402,6 +2412,7 @@ async function initModelStep(){
   document.getElementById('modelSearchWrap').style.display=(isOR||isOllama||isNvidia||isDeepSeek||isOpenAICompat)?'':'none';
   document.getElementById('modelSearch').style.display=isOllama?'none':'';
   document.getElementById('manualModelWrap').style.display=''; // Always show custom input
+  document.getElementById('manualModel').value = setupState.model || '';
   if(isUncensored){
     setupState.tier='uncensored';
     document.querySelectorAll('.tier-btn').forEach(b=>b.classList.toggle('active',b.dataset.tier==='uncensored'));
@@ -2535,6 +2546,8 @@ async function saveConfig(){
   document.getElementById('btnSave').disabled=true;
   document.getElementById('btnSave').innerHTML='<div class="spinner"></div> Saving...';
   let config={};
+  setSavedApiKey(setupState.key);
+  setSavedModel(setupState.model);
   if(setupState.provider==='openrouter'||setupState.provider==='uncensored')config={
     AI_PROVIDER:'openai',CLAUDE_CODE_USE_OPENAI:'1',
     OPENAI_API_KEY:setupState.key,

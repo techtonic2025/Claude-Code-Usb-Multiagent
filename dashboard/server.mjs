@@ -1396,7 +1396,7 @@ const server = createServer(async (req, res) => {
     }
     try {
         if (url.pathname === '/' && req.method === 'GET') {
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' });
             return res.end(readFileSync(HTML_FILE, 'utf-8'));
         }
         // Serve static files (CSS, JS, images) — prevent path traversal
@@ -1715,8 +1715,11 @@ const server = createServer(async (req, res) => {
             try {
                 // Check if already running
                 try { await fetchExternal('http://localhost:20128/v1/models', {}, null, 'GET'); return sendJSON(res, 200, { running: true, started: false, models: -1 }); } catch {}
-                // Start OmniRoute in background
-                const child = spawn('cmd', ['/c', 'start', '/B', 'omniroute'], { detached: true, stdio: 'ignore', shell: true, windowsHide: true });
+                // Start OmniRoute in background (cross-platform: cmd on Windows, direct spawn on macOS/Linux)
+                const isWin = process.platform === 'win32';
+                const child = isWin
+                    ? spawn('cmd', ['/c', 'start', '/B', 'omniroute'], { detached: true, stdio: 'ignore', shell: true, windowsHide: true })
+                    : spawn('omniroute', [], { detached: true, stdio: 'ignore' });
                 child.unref();
                 // Wait for it to come online (max 15s)
                 for (let i = 0; i < 15; i++) {
