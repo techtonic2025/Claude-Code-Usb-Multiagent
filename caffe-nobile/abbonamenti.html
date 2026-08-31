@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abbonamenti — Caffè Nobile</title>
+  <link rel="stylesheet" href="assets/css/design-system.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">C</span>
+        <span>
+          <span class="brand-name">Caffè Nobile</span>
+          <span class="brand-tag">Specialty Coffee</span>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="caffe.html">Caffè</a>
+        <a href="origini.html">Origini</a>
+        <a href="abbonamenti.html" class="active">Abbonamenti</a>
+        <a href="chi-siamo.html">Chi siamo</a>
+        <a href="blog.html">Blog</a>
+        <a href="assistenza.html">Assistenza</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="icon-btn" title="Account">👤</a>
+        <a href="cart.html" class="icon-btn" title="Carrello">🛒<span class="cart-count" data-cart-count style="display:none">0</span></a>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container page-head">
+    <h1>Abbonamenti</h1>
+    <p>Caffè sempre fresco a casa tua. Scegli la frequenza, cambia o sospendi quando vuoi.</p>
+  </div>
+
+  <section class="section" style="padding-top:24px;">
+    <div class="container">
+      <div class="grid grid-3">
+        <div class="panel">
+          <div class="product-cat">Espresso</div>
+          <h2 style="font-size:28px;">€14,90<span style="font-size:15px; color:var(--ink-faint);"> / mese</span></h2>
+          <p style="color:var(--ink-soft);">1 caffè da 250g al mese, scelto dal torrefattore. Perfetto per iniziare.</p>
+          <div style="margin:16px 0;">
+            <div class="summary-line"><span>✔ Consegna gratuita</span></div>
+            <div class="summary-line"><span>✔ Tostato su ordinazione</span></div>
+            <div class="summary-line"><span>✔ Sospendi quando vuoi</span></div>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="addToCart('miscela-casa', 1)">Attiva Espresso</button>
+        </div>
+        <div class="panel" style="border-color:var(--accent); box-shadow:var(--shadow-md);">
+          <span class="product-badge bestseller" style="position:static;">Più scelto</span>
+          <h2 style="font-size:28px; margin-top:8px;">€26,90<span style="font-size:15px; color:var(--ink-faint);"> / mese</span></h2>
+          <p style="color:var(--ink-soft);">2 caffè specialty da 250g al mese, monorigine e miscele a rotazione.</p>
+          <div style="margin:16px 0;">
+            <div class="summary-line"><span>✔ Consegna gratuita</span></div>
+            <div class="summary-line"><span>✔ 2 origini diverse al mese</span></div>
+            <div class="summary-line"><span>✔ Scheda di degustazione inclusa</span></div>
+            <div class="summary-line"><span>✔ Sconto 10% su tutto lo shop</span></div>
+          </div>
+          <button class="btn btn-accent btn-block" onclick="addToCart('colombia-huila', 1)">Attiva Specialty</button>
+        </div>
+        <div class="panel">
+          <div class="product-cat">Gourmet</div>
+          <h2 style="font-size:28px;">€49,90<span style="font-size:15px; color:var(--ink-faint);"> / mese</span></h2>
+          <p style="color:var(--ink-soft);">4 caffè rare e pregiate da 250g, per i veri appassionati.</p>
+          <div style="margin:16px 0;">
+            <div class="summary-line"><span>✔ Consegna prioritaria</span></div>
+            <div class="summary-line"><span>✔ 4 origini rare al mese</span></div>
+            <div class="summary-line"><span>✔ Accesso ai lotti limitati</span></div>
+            <div class="summary-line"><span>✔ Sconto 15% su tutto lo shop</span></div>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="addToCart('giappone-okinawa', 1)">Attiva Gourmet</button>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--ink-faint); margin-top:24px;">Nessun vincolo: puoi cambiare piano, saltare una consegna o disdire in qualsiasi momento dall'account.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Caffè Nobile</h4>
+          <p>Torrefazione artigianale a Milano dal 2015. Selezioniamo micro-lotti specialty e li tostiamo a regola d'arte, consegnandoli freschi entro 48 ore dalla tostatura.</p>
+        </div>
+        <div>
+          <h4>Esplora</h4>
+          <ul>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="caffe.html">Caffè</a></li>
+            <li><a href="origini.html">Origini</a></li>
+            <li><a href="abbonamenti.html">Abbonamenti</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Azienda</h4>
+          <ul>
+            <li><a href="chi-siamo.html">Chi siamo</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="assistenza.html">Assistenza</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contatti</h4>
+          <ul>
+            <li>Via dei Torrefattori 12, Milano</li>
+            <li>info@caffenobile.it</li>
+            <li>+39 02 1234 5678</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2015–2026 Caffè Nobile · P.IVA 01234567890</span>
+        <span>Specialty coffee tostato a Milano</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

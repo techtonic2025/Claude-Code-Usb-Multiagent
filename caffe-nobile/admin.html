@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Caffè Nobile</title>
+  <link rel="stylesheet" href="assets/css/design-system.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">C</span>
+        <span>
+          <span class="brand-name">Caffè Nobile</span>
+          <span class="brand-tag">Specialty Coffee</span>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="caffe.html">Caffè</a>
+        <a href="origini.html">Origini</a>
+        <a href="abbonamenti.html">Abbonamenti</a>
+        <a href="chi-siamo.html">Chi siamo</a>
+        <a href="blog.html">Blog</a>
+        <a href="assistenza.html">Assistenza</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="icon-btn" title="Account">👤</a>
+        <a href="cart.html" class="icon-btn" title="Carrello">🛒<span class="cart-count" data-cart-count style="display:none">0</span></a>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container page-head">
+    <h1>Pannello amministratore</h1>
+    <p>Gestione catalogo, ordini e abbonamenti.</p>
+  </div>
+
+  <section class="section" style="padding-top:16px;">
+    <div class="container">
+      <div class="grid grid-4">
+        <div class="stat"><div class="stat-num">€4.820</div><div class="stat-label">Vendite questo mese</div></div>
+        <div class="stat"><div class="stat-num">142</div><div class="stat-label">Ordini</div></div>
+        <div class="stat"><div class="stat-num">68</div><div class="stat-label">Abbonamenti attivi</div></div>
+        <div class="stat"><div class="stat-num">15</div><div class="stat-label">Prodotti in catalogo</div></div>
+      </div>
+
+      <div class="panel" style="margin-top:24px;">
+        <h3>Ordini recenti</h3>
+        <div style="overflow-x:auto;">
+          <table class="table">
+            <thead><tr><th>Ordine</th><th>Cliente</th><th>Data</th><th>Totale</th><th>Stato</th></tr></thead>
+            <tbody>
+              <tr><td>#CN-1047</td><td>Giulia Bianchi</td><td>30/08/2026</td><td>€62,10</td><td><span class="badge-dot" style="background:var(--accent)"></span>In lavorazione</td></tr>
+              <tr><td>#CN-1046</td><td>Luca Ferrari</td><td>30/08/2026</td><td>€38,40</td><td><span class="badge-dot" style="background:var(--accent)"></span>In lavorazione</td></tr>
+              <tr><td>#CN-1045</td><td>Anna Colombo</td><td>29/08/2026</td><td>€29,90</td><td><span class="badge-dot" style="background:var(--star)"></span>Spedito</td></tr>
+              <tr><td>#CN-1044</td><td>Marco Greco</td><td>29/08/2026</td><td>€84,50</td><td><span class="badge-dot" style="background:var(--success)"></span>Consegnato</td></tr>
+              <tr><td>#CN-1043</td><td>Elena Romano</td><td>28/08/2026</td><td>€51,20</td><td><span class="badge-dot" style="background:var(--success)"></span>Consegnato</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:24px;">
+        <h3>Catalogo prodotti</h3>
+        <div style="overflow-x:auto;">
+          <table class="table" id="admin-products">
+            <thead><tr><th></th><th>Prodotto</th><th>Categoria</th><th>Tostatura</th><th>Prezzo</th><th>Scorte</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Caffè Nobile</h4>
+          <p>Torrefazione artigianale a Milano dal 2015. Selezioniamo micro-lotti specialty e li tostiamo a regola d'arte, consegnandoli freschi entro 48 ore dalla tostatura.</p>
+        </div>
+        <div>
+          <h4>Esplora</h4>
+          <ul>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="caffe.html">Caffè</a></li>
+            <li><a href="origini.html">Origini</a></li>
+            <li><a href="abbonamenti.html">Abbonamenti</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Azienda</h4>
+          <ul>
+            <li><a href="chi-siamo.html">Chi siamo</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="assistenza.html">Assistenza</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contatti</h4>
+          <ul>
+            <li>Via dei Torrefattori 12, Milano</li>
+            <li>info@caffenobile.it</li>
+            <li>+39 02 1234 5678</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2015–2026 Caffè Nobile · P.IVA 01234567890</span>
+        <span>Specialty coffee tostato a Milano</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    const stock = ["in scorta", "in scorta", "bassa", "in scorta", "in scorta", "in scorta", "in scorta", "in scorta", "bassa", "limitata", "in scorta", "in scorta", "in scorta", "in scorta", "in scorta"];
+    document.querySelector("#admin-products tbody").innerHTML = PRODUCTS.map((p, i) => {
+      const s = stock[i];
+      const color = s === "in scorta" ? "var(--success)" : s === "bassa" ? "var(--star)" : "var(--danger)";
+      return `<tr>
+        <td><div class="thumb" style="background:${TONES[p.tone]}">${p.glyph}</div></td>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.cat}</td>
+        <td>${p.roast || "—"}</td>
+        <td>${formatPrice(p.price)}</td>
+        <td><span class="badge-dot" style="background:${color}"></span>${s}</td>
+      </tr>`;
+    }).join("");
+  </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistenza — Caffè Nobile</title>
+  <link rel="stylesheet" href="assets/css/design-system.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">C</span>
+        <span>
+          <span class="brand-name">Caffè Nobile</span>
+          <span class="brand-tag">Specialty Coffee</span>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="caffe.html">Caffè</a>
+        <a href="origini.html">Origini</a>
+        <a href="abbonamenti.html">Abbonamenti</a>
+        <a href="chi-siamo.html">Chi siamo</a>
+        <a href="blog.html">Blog</a>
+        <a href="assistenza.html" class="active">Assistenza</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="icon-btn" title="Account">👤</a>
+        <a href="cart.html" class="icon-btn" title="Carrello">🛒<span class="cart-count" data-cart-count style="display:none">0</span></a>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container page-head">
+    <h1>Assistenza</h1>
+    <p>Domande frequenti e contatti. Siamo qui per aiutarti.</p>
+  </div>
+
+  <section class="section" style="padding-top:24px;">
+    <div class="container">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;" class="faq-wrap">
+        <div>
+          <div class="panel" style="margin-bottom:16px;"><h3>Quando spedite il caffè?</h3><p style="margin:0; color:var(--ink-soft);">Spediamo entro 48 ore dalla tostatura. Riceverai una email con il tracking appena il pacco parte.</p></div>
+          <div class="panel" style="margin-bottom:16px;"><h3>Come conservo il caffè?</h3><p style="margin:0; color:var(--ink-soft);">In un contenitore ermetico, lontano da luce e calore. Evita il frigorifero: l'umidità rovina gli aromi.</p></div>
+          <div class="panel" style="margin-bottom:16px;"><h3>La spedizione è gratuita?</h3><p style="margin:0; color:var(--ink-soft);">Sì, sopra i €40. Sotto i €40 la spedizione costa €4,90 in tutta Italia.</p></div>
+          <div class="panel"><h3>Posso sospendere l'abbonamento?</h3><p style="margin:0; color:var(--ink-soft);">Certo. Dalla tua area account puoi saltare una consegna, cambiare piano o disdire in qualsiasi momento.</p></div>
+        </div>
+        <div class="panel">
+          <h3>Contattaci</h3>
+          <p style="color:var(--ink-soft);">Rispondiamo entro 24 ore nei giorni lavorativi.</p>
+          <form onsubmit="return sendMsg(event)">
+            <div class="field"><label>Nome</label><input id="c-name" required></div>
+            <div class="field"><label>Email</label><input id="c-email" type="email" required></div>
+            <div class="field"><label>Messaggio</label><textarea id="c-msg" rows="4" required></textarea></div>
+            <button type="submit" class="btn btn-accent btn-block">Invia messaggio</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Caffè Nobile</h4>
+          <p>Torrefazione artigianale a Milano dal 2015. Selezioniamo micro-lotti specialty e li tostiamo a regola d'arte, consegnandoli freschi entro 48 ore dalla tostatura.</p>
+        </div>
+        <div>
+          <h4>Esplora</h4>
+          <ul>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="caffe.html">Caffè</a></li>
+            <li><a href="origini.html">Origini</a></li>
+            <li><a href="abbonamenti.html">Abbonamenti</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Azienda</h4>
+          <ul>
+            <li><a href="chi-siamo.html">Chi siamo</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="assistenza.html">Assistenza</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contatti</h4>
+          <ul>
+            <li>Via dei Torrefattori 12, Milano</li>
+            <li>info@caffenobile.it</li>
+            <li>+39 02 1234 5678</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2015–2026 Caffè Nobile · P.IVA 01234567890</span>
+        <span>Specialty coffee tostato a Milano</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function sendMsg(e) {
+      e.preventDefault();
+      toast("Messaggio inviato. Ti risponderemo entro 24 ore.");
+      document.getElementById("c-name").value = "";
+      document.getElementById("c-email").value = "";
+      document.getElementById("c-msg").value = "";
+      return false;
+    }
+  </script>
+</body>
+</html>

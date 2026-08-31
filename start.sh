@@ -59,9 +59,18 @@ echo ""
 # ─── 1. Download Node.js if needed ─────────────────────────────────
 if [ ! -f "$NODE_BIN" ]; then
     echo -e "${YELLOW}[~] Node.js non trovato. Scarico v${NODE_VERSION} per ${PLATFORM}-${NODE_ARCH}...${RESET}"
+    # Verify the drive is writable (an NTFS-formatted USB stick is read-only on macOS)
+    if ! touch "$ENGINE_DIR/.write-test" 2>/dev/null; then
+        echo -e "${RED}[ERROR] La chiavetta USB non e' scrivibile.${RESET}"
+        echo -e "${DIM}  Su macOS le chiavette NTFS (formattate su Windows) sono in sola lettura.${RESET}"
+        echo -e "${DIM}  Riformattala in exFAT (compatibile Windows/macOS/Linux) e riprova.${RESET}"
+        exit 1
+    fi
+    rm -f "$ENGINE_DIR/.write-test"
+
     NODE_URL="https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-${PLATFORM}-${NODE_ARCH}.${NODE_ARCHIVE_EXT}"
     TEMP_TAR="$ENGINE_DIR/node.${NODE_ARCHIVE_EXT}"
-    curl --fail --location --retry 3 --connect-timeout 20 "$NODE_URL" -o "$TEMP_TAR" || {
+    curl --fail --location --retry 3 --retry-delay 3 --connect-timeout 20 --max-time 600 "$NODE_URL" -o "$TEMP_TAR" || {
         echo -e "${RED}[ERROR] Download Node.js fallito.${RESET}"
         echo "Scarica Node.js da https://nodejs.org e riprova."
         exit 1
@@ -71,6 +80,11 @@ if [ ! -f "$NODE_BIN" ]; then
     mkdir -p "$NODE_DIR"
     tar -xf "$TEMP_TAR" -C "$NODE_DIR" --strip-components=1
     rm "$TEMP_TAR"
+    # Ensure binaries are executable and clear any macOS quarantine flag
+    chmod +x "$NODE_BIN" "$NPM_BIN" "$NODE_DIR/bin/npx" 2>/dev/null || true
+    if [ "$OS_NAME" = "darwin" ]; then
+        xattr -dr com.apple.quarantine "$NODE_DIR" 2>/dev/null || true
+    fi
     echo -e "${GREEN}[OK] Node.js installato.${RESET}"
 fi
 export PATH="$NODE_DIR/bin:$PATH"
@@ -84,9 +98,16 @@ if [ ! -f "$CC_CLI" ]; then
     "$NPM_BIN" install @anthropic-ai/claude-code@latest --ignore-scripts --no-audit --no-fund --loglevel=warn --cache "$NPM_CACHE_DIR" >> "$ENGINE_DIR/engine-install.log" 2>&1 &
     NPM_PID=$!
     ELAPSED=0
+    NPM_TIMEOUT=900   # 15 minuti
     while kill -0 "$NPM_PID" 2>/dev/null; do
         sleep 5; ELAPSED=$((ELAPSED + 5))
         echo -ne "\r  ${DIM}[${ELAPSED}s] Installazione in corso...${RESET}"
+        if [ "$ELAPSED" -ge "$NPM_TIMEOUT" ]; then
+            kill "$NPM_PID" 2>/dev/null
+            echo -e "\n${RED}[ERROR] Installazione Claude Code bloccata (timeout ${NPM_TIMEOUT}s).${RESET}"
+            echo "Controlla il log: $ENGINE_DIR/engine-install.log"
+            exit 1
+        fi
     done
     wait "$NPM_PID" || {
         echo -e "\n${RED}[ERROR] Installazione Claude Code fallita.${RESET}"

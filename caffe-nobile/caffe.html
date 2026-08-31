@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il nostro caffè — Caffè Nobile</title>
+  <link rel="stylesheet" href="assets/css/design-system.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">C</span>
+        <span>
+          <span class="brand-name">Caffè Nobile</span>
+          <span class="brand-tag">Specialty Coffee</span>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="caffe.html" class="active">Caffè</a>
+        <a href="origini.html">Origini</a>
+        <a href="abbonamenti.html">Abbonamenti</a>
+        <a href="chi-siamo.html">Chi siamo</a>
+        <a href="blog.html">Blog</a>
+        <a href="assistenza.html">Assistenza</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="icon-btn" title="Account">👤</a>
+        <a href="cart.html" class="icon-btn" title="Carrello">🛒<span class="cart-count" data-cart-count style="display:none">0</span></a>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container breadcrumb">
+    <a href="index.html">Home</a><span class="sep">/</span>Caffè
+  </div>
+
+  <div class="container page-head">
+    <h1>Il nostro caffè</h1>
+    <p>Monorigine o miscela? Tostatura chiara o scura? Ti guidiamo nella scelta della tazza perfetta.</p>
+  </div>
+
+  <section class="section" style="padding-top:24px;">
+    <div class="container">
+      <div class="grid grid-3">
+        <div class="panel">
+          <h3>Monorigine</h3>
+          <p style="color:var(--ink-soft);">Un caffè proveniente da una sola origine, per assaporare il carattere unico di un terroir. Cambia con ogni raccolto.</p>
+          <a href="shop.html?cat=Monorigine" class="btn btn-ghost btn-sm">Esplora le monorigine</a>
+        </div>
+        <div class="panel">
+          <h3>Miscele Premium</h3>
+          <p style="color:var(--ink-soft);">Equilibri firmati dal nostro master roaster, pensati per l'espresso e per una tazza costante tutto l'anno.</p>
+          <a href="shop.html?cat=Miscela Premium" class="btn btn-ghost btn-sm">Esplora le miscele</a>
+        </div>
+        <div class="panel">
+          <h3>Decaffeinato</h3>
+          <p style="color:var(--ink-soft);">Decaffeinato con processo naturale, per chi ama il caffè senza rinunciare al gusto.</p>
+          <a href="shop.html?cat=Decaffeinato" class="btn btn-ghost btn-sm">Esplora il decaffeinato</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Tostatura</div>
+          <h2>I livelli di tostatura</h2>
+        </div>
+      </div>
+      <div class="grid grid-4" id="roasts"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Dal chicco alla tazza</div>
+          <h2>Il nostro processo</h2>
+        </div>
+      </div>
+      <div class="grid grid-3">
+        <div class="stat"><div class="stat-num">1</div><div class="stat-label">Selezione dei micro-lotti</div><p style="color:var(--ink-soft); font-size:14px; margin-top:8px;">Viaggiamo nelle regioni d'origine e assaggiamo centinaia di lotti per scegliere solo i migliori.</p></div>
+        <div class="stat"><div class="stat-num">2</div><div class="stat-label">Tostatura artigianale</div><p style="color:var(--ink-soft); font-size:14px; margin-top:8px;">Piccoli lotti tostati a Milano dal nostro master roaster, con un profilo dedicato a ogni caffè.</p></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-label">Consegna fresca</div><p style="color:var(--ink-soft); font-size:14px; margin-top:8px;">Confezioniamo subito dopo la tostatura e spediamo entro 48 ore, perché il caffè è un prodotto vivo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Caffè Nobile</h4>
+          <p>Torrefazione artigianale a Milano dal 2015. Selezioniamo micro-lotti specialty e li tostiamo a regola d'arte, consegnandoli freschi entro 48 ore dalla tostatura.</p>
+        </div>
+        <div>
+          <h4>Esplora</h4>
+          <ul>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="caffe.html">Caffè</a></li>
+            <li><a href="origini.html">Origini</a></li>
+            <li><a href="abbonamenti.html">Abbonamenti</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Azienda</h4>
+          <ul>
+            <li><a href="chi-siamo.html">Chi siamo</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="assistenza.html">Assistenza</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contatti</h4>
+          <ul>
+            <li>Via dei Torrefattori 12, Milano</li>
+            <li>info@caffenobile.it</li>
+            <li>+39 02 1234 5678</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2015–2026 Caffè Nobile · P.IVA 01234567890</span>
+        <span>Specialty coffee tostato a Milano</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    const ROAST_INFO = [
+      { name: "Chiaro", tone: "caramel", desc: "Esalta acidità e note fruttate e floreali. Perfetto per filtro e pour-over." },
+      { name: "Chiaro-Medio", tone: "gold", desc: "Dolcezza in equilibrio con una lieve acidità. Versatile, per filtro ed espresso." },
+      { name: "Medio", tone: "brown", desc: "Il punto di equilibrio tra corpo e aromi. Ideale per moka ed espresso." },
+      { name: "Medio-Scuro", tone: "redbrown", desc: "Corpo pieno e note di cioccolato. Si apre a caramello e frutta secca." },
+      { name: "Scuro", tone: "charcoal", desc: "Tostatura intensa da espresso: cacao amaro, corpo vellutato, crema densa." },
+    ];
+    document.getElementById("roasts").innerHTML = ROAST_INFO.map(r => `
+      <a class="cat-tile" href="shop.html?roast=${r.name}" style="background:${TONES[r.tone]}; aspect-ratio:auto; min-height:180px;">
+        <h3 class="cat-name">${r.name}</h3>
+        <p class="cat-desc">${r.desc}</p>
+      </a>`).join("");
+  </script>
+</body>
+</html>

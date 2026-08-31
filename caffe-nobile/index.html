@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caffè Nobile — Specialty Coffee</title>
+  <meta name="description" content="Caffè specialty tostato artigianalmente a Milano. Micro-lotti selezionati, consegna fresca entro 48 ore dalla tostatura.">
+  <link rel="stylesheet" href="assets/css/design-system.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">C</span>
+        <span>
+          <span class="brand-name">Caffè Nobile</span>
+          <span class="brand-tag">Specialty Coffee</span>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="caffe.html">Caffè</a>
+        <a href="origini.html">Origini</a>
+        <a href="abbonamenti.html">Abbonamenti</a>
+        <a href="chi-siamo.html">Chi siamo</a>
+        <a href="blog.html">Blog</a>
+        <a href="assistenza.html">Assistenza</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="icon-btn" title="Account">👤</a>
+        <a href="cart.html" class="icon-btn" title="Carrello">🛒<span class="cart-count" data-cart-count style="display:none">0</span></a>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-kicker">Dal 2015</div>
+      <h1>L'arte del caffè,<br>dalla pianta alla tazza</h1>
+      <p>Selezioniamo i migliori micro-lotti dai produttori più rinomati del mondo e li tostiamo a regola d'arte.</p>
+      <p>Tostatura artigianale a Milano, consegna fresca garantita entro 48 ore dalla tostatura.</p>
+      <div class="hero-actions">
+        <a href="shop.html" class="btn btn-accent">Esplora lo shop</a>
+        <a href="abbonamenti.html" class="btn btn-light">Abbonati al caffè</a>
+      </div>
+      <div class="hero-note">
+        <span>✔ Spedizione gratuita sopra €40</span>
+        <span>✔ Tostato questa settimana</span>
+        <span>✔ Pagamenti sicuri</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Le categorie</div>
+          <h2>Trova il tuo caffè</h2>
+        </div>
+      </div>
+      <div class="grid grid-4" id="categories"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker">Selezione del torrefattore</div>
+          <h2>Prodotti in evidenza</h2>
+        </div>
+        <a href="shop.html" class="btn btn-ghost">Vedi tutto</a>
+      </div>
+      <p class="section-sub" style="margin-top:-16px; margin-bottom:24px;">I caffè che il nostro master roaster ha scelto questo mese per te.</p>
+      <div class="grid grid-3" id="featured"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-3">
+        <div class="stat">
+          <div class="stat-num">48h</div>
+          <div class="stat-label">dalla tostatura alla consegna</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">9</div>
+          <div class="stat-label">origini selezionate</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Arabica specialty</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Caffè Nobile</h4>
+          <p>Torrefazione artigianale a Milano dal 2015. Selezioniamo micro-lotti specialty e li tostiamo a regola d'arte, consegnandoli freschi entro 48 ore dalla tostatura.</p>
+        </div>
+        <div>
+          <h4>Esplora</h4>
+          <ul>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="caffe.html">Caffè</a></li>
+            <li><a href="origini.html">Origini</a></li>
+            <li><a href="abbonamenti.html">Abbonamenti</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Azienda</h4>
+          <ul>
+            <li><a href="chi-siamo.html">Chi siamo</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="assistenza.html">Assistenza</a></li>
+            <li><a href="account.html">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contatti</h4>
+          <ul>
+            <li>Via dei Torrefattori 12, Milano</li>
+            <li>info@caffenobile.it</li>
+            <li>+39 02 1234 5678</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2015–2026 Caffè Nobile · P.IVA 01234567890</span>
+        <span>Specialty coffee tostato a Milano</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    const CATS = [
+      { name: "Monorigine", count: 8, rep: "Etiopia Yirgacheffe Grand Cru", sub: "Gelsomino, Bergamotto", img: "assets/img/cat-monorigine.jpg", link: "shop.html?cat=Monorigine" },
+      { name: "Miscele Premium", count: 4, rep: "Miscela Oro — Espresso Italiano", sub: "Cioccolato, Zucchero caramellato", img: "assets/img/cat-miscela.jpg", link: "shop.html?cat=Miscela Premium" },
+      { name: "Capsule Compatibili", count: 2, rep: "Capsule Etiopia Yirgacheffe", sub: "Gelsomino, Bergamotto", img: "assets/img/cat-capsule.jpg", link: "shop.html?cat=Capsule" },
+      { name: "Decaffeinato", count: 1, rep: "Miscela Nera", sub: "Cacao, Mandorla tostata", img: "assets/img/cat-decaf.jpg", link: "shop.html?cat=Decaffeinato" },
+    ];
+    document.getElementById("categories").innerHTML = CATS.map(c => `
+      <a class="cat-tile" href="${c.link}">
+        <img src="${c.img}" alt="${c.name}" loading="lazy">
+        <h3 class="cat-name">${c.name}</h3>
+        <span class="cat-count">${c.count} prodotti</span>
+        <p class="cat-desc">${c.rep} · ${c.sub}</p>
+      </a>`).join("");
+
+    const featuredIds = ["brasile-cerrado", "colombia-huila", "guatemala-antigua"];
+    renderProducts(document.getElementById("featured"), featuredIds.map(findProduct));
+  </script>
+</body>
+</html>
