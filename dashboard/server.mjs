@@ -392,10 +392,10 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
     { role: 'user', content: enhancedTask }
   ];
 
-  // Simple ReAct loop — max 10 iterations
+  // Simple ReAct loop — bounded to avoid runaway agents
   let fullText = '';
   let iterations = 0;
-  const maxIterations = 15;
+  const maxIterations = 25;
   let madeToolCall = false;
   let nudges = 0;
   const maxNudges = 2;
@@ -501,7 +501,7 @@ Dopo il tool, riceverai il risultato e potrai continuare.` : '';
   }
 
   if (iterations >= maxIterations && !fullText) {
-    fullText = '⚠️ L\'agente ha raggiunto il limite di iterazioni. Prova a riformulare il task in modo più specifico.';
+    fullText = `⚠️ L'agente ha raggiunto il limite di ${maxIterations} iterazioni senza completare il task.\n\nConsigli:\n1. Riformula il task in modo più specifico (un solo obiettivo per volta).\n2. Se serve un lavoro lungo, suddividilo in più task separati.\n3. Riprova: spesso al secondo tentativo l'agente converge.`;
     sendSSE({ type: 'agent_text', content: fullText });
   }
 
